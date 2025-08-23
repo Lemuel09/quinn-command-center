@@ -6,96 +6,59 @@
 <title>Quinn — Command Center</title>
 <style>
   :root{
-    --bg:#0B1020;
-    --panel:rgba(255,255,255,.06);
-    --panel2:rgba(255,255,255,.02);
-    --line:rgba(255,255,255,.12);
-    --text:#e8f7ff;
-    --cyan:#00F0FF;
-    --green:#3BFF88;
-    --purple:#8A7CFF;
-    --danger:#FF3B3B;
-    --glass:rgba(255,255,255,.08);
+    --bg:#0B1020; --panel:rgba(255,255,255,.06); --panel2:rgba(255,255,255,.02);
+    --line:rgba(255,255,255,.12); --text:#e8f7ff; --cyan:#00F0FF; --green:#3BFF88; --purple:#8A7CFF;
   }
   html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 50% 0%, #121832 0%, #0B1020 60%, #05070e 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
   a{color:var(--cyan);text-decoration:none}
-  .wrap{max-width:1200px;margin:24px auto 60px;padding:0 16px}
+  .wrap{max-width:1200px;margin:18px auto 60px;padding:0 16px}
   .card{background:linear-gradient(180deg, var(--panel), var(--panel2));border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter: blur(10px)}
   .card h2{margin:0;padding:16px 18px 6px;font-size:1.1rem;letter-spacing:.3px}
   .card .body{padding:14px 18px 18px}
 
-  /* ======= HERO ======= */
-  .titlebar{padding:18px 20px 0}
-  .titlebar h1{margin:0;font-weight:800;letter-spacing:.2px}
-  .titlebar .subtitle{margin:6px 0 4px;color:#bcd8ff;opacity:.95}
-  .titlebar .tagline{margin:0;color:#9fb7ff;opacity:.9;font-style:italic;text-shadow:0 0 6px rgba(138,124,255,.6),0 0 12px rgba(0,240,255,.35)}
+  /* Title */
+  .titlebar{padding:10px 0 2px;text-align:center}
+  .titlebar h1{margin:0;font-weight:800;letter-spacing:.2px;font-size:clamp(22px,3.2vw,36px)}
 
+  /* HERO */
   .hero{margin-top:10px;padding:18px}
   .hero-grid{display:grid;grid-template-columns:minmax(320px,520px) 1fr;gap:18px;align-items:center}
   @media(max-width:900px){ .hero-grid{grid-template-columns:1fr} }
 
-  /* Left “ribbon” */
-  .ribbon{
-    position:relative;
-    border:1px solid rgba(255,255,255,.14);
-    background:linear-gradient(180deg, rgba(0,240,255,.16), rgba(255,255,255,.02));
-    box-shadow:inset 0 0 24px rgba(0,240,255,.08), 0 10px 36px rgba(0,0,0,.35);
-    border-radius:44px 160px 44px 160px/44px 200px 44px 200px;
-    padding:28px 28px 28px 28px;
-    overflow:hidden;
-    min-height:260px;
-  }
-  .ribbon:after{
-    content:"";
-    position:absolute; right:-160px; top:-30px;
-    width:520px; height:520px; pointer-events:none;
-    background:
-      radial-gradient(closest-side, rgba(0,240,255,.14), rgba(0,240,255,0) 70%),
-      radial-gradient(closest-side, rgba(138,124,255,.12), rgba(138,124,255,0) 70%);
-    filter: blur(4px);
-  }
-  .ribbon .display{font-weight:900; line-height:.95; margin:0 0 10px}
-  .ribbon .display .hl{color:#fff; text-shadow:0 8px 30px rgba(0,0,0,.45), 0 0 24px rgba(0,240,255,.25)}
-  .ribbon .sysline{font-size:1rem;color:#d8e7ff;opacity:.95;margin:0 0 10px}
-  .ribbon .miniTag{font-style:italic;color:#9fb7ff;opacity:.95;margin:0}
+  .hero-copy h2{margin:0 0 8px;font-weight:900;line-height:.95;
+    font-size:clamp(56px,9vw,120px);text-shadow:0 8px 30px rgba(0,0,0,.45), 0 0 24px rgba(0,240,255,.18)}
+  .hero-copy .sysline{font-size:1rem;color:#d8e7ff;opacity:.95;margin:0 0 6px}
+  .hero-copy .miniTag{font-style:italic;color:#9fb7ff;opacity:.95;margin:0}
 
-  /* Eye host (kept from your previous design, just sized for hero) */
   .quinn-host{display:grid;place-items:center}
-  .quinn-wrap{position:relative;display:grid;place-items:center;width:min(520px, 92vw);max-width:520px;aspect-ratio:1/1;border-radius:24px;background:radial-gradient(220px 160px at 50% 15%, rgba(0,240,255,.12), rgba(0,0,0,0));box-shadow: inset 0 -10px 40px rgba(0,0,0,.35), inset 0 10px 40px rgba(255,255,255,.02)}
+  .quinn-wrap{position:relative;display:grid;place-items:center;width:min(520px, 92vw);max-width:520px;aspect-ratio:1/1;border-radius:24px;
+    background:radial-gradient(220px 160px at 50% 15%, rgba(0,240,255,.10), rgba(0,0,0,0));box-shadow: inset 0 -10px 40px rgba(0,0,0,.35), inset 0 10px 40px rgba(255,255,255,.02)}
   .quinn{position:relative;width:70%;height:70%;filter:drop-shadow(0 12px 28px rgba(0,0,0,.6))}
   .ring{position:absolute;inset:0;border-radius:50%;background:
     conic-gradient(from 0deg, rgba(255,255,255,.15) 0 10deg, rgba(255,255,255,.04) 10deg 30deg, rgba(255,255,255,.15) 30deg 45deg, rgba(255,255,255,.04) 45deg 70deg, rgba(255,255,255,.15) 70deg 90deg, rgba(255,255,255,.04) 90deg 130deg, rgba(255,255,255,.15) 130deg 150deg, rgba(255,255,255,.04) 150deg 210deg, rgba(255,255,255,.15) 210deg 230deg, rgba(255,255,255,.04) 230deg 270deg, rgba(255,255,255,.15) 270deg 300deg, rgba(255,255,255,.04) 300deg 360deg),
-    radial-gradient(closest-side, rgba(255,255,255,.18), rgba(255,255,255,.06) 60%, rgba(0,0,0,.5) 100%);
-    box-shadow:inset 0 0 0 2px rgba(255,255,255,.08), inset 0 0 40px rgba(138,124,255,.15);
-    animation:spin 10s linear infinite;
-  }
-  .sweep{position:absolute;inset:3px;border-radius:50%;background:conic-gradient(from var(--sweep-from,0deg), transparent 0deg, rgba(0,240,255,.18) 30deg, rgba(59,255,136,.18) 45deg, transparent 80deg);filter: blur(2px) drop-shadow(0 0 16px rgba(0,240,255,.45));mix-blend-mode:screen;opacity:.5;animation:sweep 5.6s linear infinite;}
+    radial-gradient(closest-side, rgba(255,255,255,.18), rgba(255,255,255,.06) 60%, rgba(0,0,0,.5) 100%); box-shadow:inset 0 0 0 2px rgba(255,255,255,.08), inset 0 0 40px rgba(138,124,255,.15);
+    animation:spin 10s linear infinite}
+  .sweep{position:absolute;inset:3px;border-radius:50%;background:conic-gradient(from var(--sweep-from,0deg), transparent 0deg, rgba(0,240,255,.18) 30deg, rgba(59,255,136,.18) 45deg, transparent 80deg);filter: blur(2px) drop-shadow(0 0 16px rgba(0,240,255,.45));mix-blend-mode:screen;opacity:.5;animation:sweep 5.6s linear infinite}
   .core{position:absolute;inset:26px;border-radius:50%;background:
     radial-gradient(120px 120px at 50% 45%, rgba(0,240,255,.35), rgba(0,240,255,.08) 60%, rgba(0,0,0,.55) 100%),
     radial-gradient(100px 70px at 55% 40%, rgba(255,255,255,.45), rgba(255,255,255,0) 60%),
     radial-gradient(80px 40px at 40% 60%, rgba(255,255,255,.25), rgba(255,255,255,0) 55%),
     radial-gradient(closest-side, #041018, #060d14 60%, #02060a 100%);
     box-shadow: inset 0 0 40px rgba(0,240,255,.25), inset 0 0 70px rgba(59,255,136,.18), 0 0 40px rgba(0,240,255,.35);
-    animation:breathe 3.6s ease-in-out infinite;
-  }
-  .iris{position:absolute;inset:78px;border-radius:50%;background:radial-gradient(circle at 50% 45%, rgba(0,240,255,.85), rgba(0,240,255,.15) 45%, rgba(0,0,0,.8) 70%);box-shadow: 0 0 24px rgba(0,240,255,.35), inset 0 0 30px rgba(0,240,255,.55);animation:iris-pulse 5s ease-in-out infinite;}
+    animation:breathe 3.6s ease-in-out infinite}
+  .iris{position:absolute;inset:78px;border-radius:50%;background:radial-gradient(circle at 50% 45%, rgba(0,240,255,.85), rgba(0,240,255,.15) 45%, rgba(0,0,0,.8) 70%);box-shadow: 0 0 24px rgba(0,240,255,.35), inset 0 0 30px rgba(0,240,255,.55);animation:iris-pulse 5s ease-in-out infinite}
   .halo{position:absolute;inset:-14px;border-radius:50%;background: radial-gradient(closest-side, rgba(0,240,255,.12), rgba(0,0,0,0));filter: blur(8px);mix-blend-mode:screen}
-
   @keyframes spin {to{transform:rotate(360deg)}}
   @keyframes sweep {to{--sweep-from:360deg}}
   @keyframes breathe {0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
   @keyframes iris-pulse {0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 
-  /* ======= TOOLBAR ======= */
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:8px 18px 16px}
+  /* TOOLBAR */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:8px 0 0}
   .btn{appearance:none;background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.15);color:#e6fbff;padding:10px 14px;border-radius:12px;cursor:pointer;transition:.2s;backdrop-filter: blur(6px);font-weight:600}
   .btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.25), 0 0 24px rgba(0,240,255,.25)}
-  .btn.cyan{box-shadow:0 0 0 0 var(--glass), 0 0 18px rgba(0,240,255,.35)}
-  .btn.green{box-shadow:0 0 18px rgba(59,255,136,.35)}
-  .search{display:flex;gap:8px;align-items:center;margin-left:auto}
-  .search input{flex:1;min-width:200px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e8f7ff;border-radius:10px;padding:10px}
 
-  /* KPIs & tables (unchanged from previous version) */
+  /* KPI + tables */
   .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
   @media(min-width:680px){.kpis{grid-template-columns:repeat(4,1fr)}}
   .kpi{padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background: radial-gradient(160px 80px at 20% 0%, rgba(0,240,255,.12), rgba(255,255,255,0));box-shadow: inset 0 0 24px rgba(0,240,255,.06)}
@@ -113,7 +76,7 @@
   .pill.yellow{background:rgba(255,190,70,.12);border-color:rgba(255,190,70,.35)}
   .pill.green{background:rgba(59,255,136,.12);border-color:rgba(59,255,136,.35)}
 
-  /* Modal + toast (unchanged) */
+  /* Modal + toast */
   .backdrop{position:fixed;inset:0;background:rgba(5,7,14,.6);backdrop-filter: blur(4px);display:none;align-items:center;justify-content:center;z-index:999}
   .backdrop.show{display:flex}
   .modal{width:min(720px,92vw);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
@@ -130,19 +93,22 @@
 </head>
 <body>
 <div class="wrap">
-
-  <!-- Top title -->
   <div class="titlebar">
-    <h1 style="font-size:clamp(28px,4.2vw,44px)">Quinn — Command Center</h1>
+    <h1>Quinn — Command Center</h1>
   </div>
 
-  <!-- HERO -->
   <div class="card hero">
     <div class="hero-grid">
-      <div class="ribbon">
-        <h2 class="display" style="font-size:clamp(56px,10vw,120px)"><span class="hl">Quinn</span></h2>
+      <div class="hero-copy">
+        <h2>Quinn</h2>
         <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
         <p class="miniTag">The eye that sees all — one agent to bind all risks and bring them to light.</p>
+        <div class="toolbar" style="padding-left:0">
+          <button class="btn" id="btnOpenQuickAudit">➕ Quick Audit</button>
+          <button class="btn" id="btnRandomAudit">🎲 Random Audit</button>
+          <button class="btn" id="btnInsights">📊 View Insights</button>
+          <button class="btn" id="btnRefresh">🔄 Refresh</button>
+        </div>
       </div>
 
       <div id="quinnHost" class="quinn-host">
@@ -157,14 +123,6 @@
         </div>
       </div>
     </div>
-
-    <div class="toolbar">
-      <button class="btn cyan" id="btnOpenQuickAudit">➕ Quick Audit</button>
-      <button class="btn" id="btnRandomAudit">🎲 Random Audit</button>
-      <button class="btn" id="btnInsights">📊 View Insights</button>
-      <button class="btn" id="btnRefresh">🔄 Refresh</button>
-      <div class="search"><input id="searchBox" placeholder="Search ticket, owner, issue…"/></div>
-    </div>
   </div>
 
   <!-- KPIs -->
@@ -177,9 +135,7 @@
     </div>
   </div></div>
 
-  <!-- Two-column HUD -->
   <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px">
-    <!-- High Risk Queue -->
     <div class="card">
       <h2 style="display:flex;align-items:center;gap:8px">🧯 High-Risk Queue <span class="pill red" id="queueCount">0</span></h2>
       <div class="body"><div class="table-wrap"><table>
@@ -192,36 +148,7 @@
       </table></div></div>
     </div>
 
-    <!-- Right column -->
     <div style="display:flex;flex-direction:column;gap:16px">
-      <div class="card">
-        <h2>🎛️ Quick Panels</h2>
-        <div class="body" style="display:grid;gap:12px">
-          <div class="card" style="border-radius:14px">
-            <h2 style="font-size:1rem">Quick Audit</h2>
-            <div class="body">
-              <p style="opacity:.85">Launch a lightweight audit: enter a ticket/call/chat ID, score &amp; notes, and save directly to the log.</p>
-              <button class="btn green" id="panelQuickAudit">Open Quick Audit</button>
-              <button class="btn" id="panelRandomAudit">Random Audit</button>
-            </div>
-          </div>
-          <div class="card" style="border-radius:14px">
-            <h2 style="font-size:1rem">Insights</h2>
-            <div class="body">
-              <p style="opacity:.85">Open your Looker/Power BI dashboard (set link below).</p>
-              <button class="btn" id="panelInsights">Open Insights</button>
-            </div>
-          </div>
-          <div class="card" style="border-radius:14px">
-            <h2 style="font-size:1rem">Slack Smart-Resolve</h2>
-            <div class="body">
-              <p style="opacity:.85">Use this URL in your Slack alert button (replace placeholders):</p>
-              <code style="font-size:.8rem;opacity:.95;word-break:break-all">WEB_APP_URL?fn=resolve&amp;ticket=01-ABC123&amp;by=carol@org.com&amp;token=YOUR_TOKEN&amp;slack=1&amp;redirect=YOUR_SITES_URL</code>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="card">
         <h2>🛰️ Live Audits (auto + manual)</h2>
         <div class="body"><div class="table-wrap"><table>
@@ -231,6 +158,15 @@
           </tr></thead>
           <tbody id="recentBody"></tbody>
         </table></div></div>
+      </div>
+
+      <div class="card">
+        <h2>🔎 Search</h2>
+        <div class="body">
+          <div class="toolbar" style="padding:0">
+            <div class="search" style="margin:0;width:100%"><input id="searchBox" placeholder="Search ticket, owner, issue…"/></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -253,7 +189,7 @@
       </div>
       <div style="margin-top:8px"><label>Issues / Notes</label><textarea id="qa_issues" placeholder="Key findings, notes, or remediation…"></textarea></div>
       <div style="display:flex;gap:10px;margin-top:14px">
-        <button class="btn green" id="btnSaveAudit">Save Audit</button>
+        <button class="btn" id="btnSaveAudit">Save Audit</button>
         <button class="btn" id="btnRandomFill">🎲 Random Ticket</button>
       </div>
     </div>
@@ -263,13 +199,13 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  /* ====== EDIT THESE THREE IF NEEDED ====== */
-  const WEB_APP_URL = https://script.google.com/a/macros/thestudio.com/s/AKfycbzabzQA1Gs4n9wy_9QDQyVTvFEpkd-3kAJgXlDhFj2AcQpImvfmYJXZ-5qTWNl0qO3I/exec';
+  /* ====== EDIT THESE THREE ====== */
+  const WEB_APP_URL = 'https://script.google.com/a/macros/thestudio.com/s/AKfycbzabzQA1Gs4n9wy_9QDQyVTvFEpkd-3kAJgXlDhFj2AcQpImvfmYJXZ-5qTWNl0qO3I/exec';
   const TOKEN       = 'QUINN_PORTAL_0c7a5f8f-1e9a-4b34-9b7d-3e6a9c21f4d8';
   const INSIGHTS_URL= 'https://lookerstudio.google.com/reporting/YOUR_REPORT_ID';
-  /* ======================================== */
+  /* ============================== */
 
-  // Eye: gentle parallax
+  // Eye parallax
   (function(){
     const iris = document.querySelector('.iris');
     const rectEl = document.querySelector('.quinn-wrap');
@@ -282,37 +218,38 @@
     rectEl.addEventListener('mouseleave', ()=>{ iris.style.transform = 'translate(0,0) scale(1)'; });
   })();
 
-  /* ========= Portal logic ========= */
-  let ALL_ALERTS = [];
+  // Utilities
   const qs = (s,root=document)=>root.querySelector(s);
   const toast = (msg)=>{ const t=qs('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); };
 
-  /* Fetch with JSONP fallback to dodge any CORS policy */
-  function fetchAlertsWithFallback(){
-    const url = new URL(WEB_APP_URL);
-    url.searchParams.set('fn','alerts');
-    return fetch(url, {mode:'cors'})
+  // Generic fetch with JSONP fallback
+  function fetchFn(fn, params={}){
+    const u = new URL(WEB_APP_URL);
+    u.searchParams.set('fn', fn);
+    Object.entries(params).forEach(([k,v])=>u.searchParams.set(k, v));
+    return fetch(u, {mode:'cors'})
       .then(r=>r.json())
-      .catch(()=> new Promise((resolve, reject)=>{
+      .catch(()=> new Promise((resolve,reject)=>{
         const cb = 'cb_'+Math.random().toString(36).slice(2);
         window[cb] = (data)=>{ resolve(data); delete window[cb]; s.remove(); };
         const s = document.createElement('script');
-        s.src = WEB_APP_URL + '?fn=alerts&callback=' + cb;
+        s.src = u.toString() + '&callback=' + cb;
         s.onerror = ()=>{ reject(new Error('jsonp failed')); delete window[cb]; s.remove(); };
         document.body.appendChild(s);
       }));
   }
 
-  async function loadData(){
-    try{
-      const data = await fetchAlertsWithFallback();
-      if(Array.isArray(data.alerts)){
-        ALL_ALERTS = data.alerts;
-        renderQueue(ALL_ALERTS);
-        renderKpis(data.kpis || {});
-      }
-      await loadRecentAudits();
-    }catch(e){ console.error(e); toast('⚠️ Could not load alerts/KPIs'); }
+  // Renderers
+  let ALL_ALERTS = [];
+  function riskToLabel(risk, riskLevel){
+    if (riskLevel) return riskLevel;
+    const n = Number(risk);
+    if (!isFinite(n)) return 'Low';
+    // Accept 0..1 or 0..100
+    const pct = n <= 1 ? (n*100) : n;
+    if (pct >= 70) return 'High';
+    if (pct >= 40) return 'Medium';
+    return 'Low';
   }
 
   function renderKpis(k){
@@ -326,7 +263,7 @@
     const body = qs('#queueBody'); body.innerHTML = '';
     qs('#queueCount').textContent = rows.length;
     for(const r of rows){
-      const riskLabel = r.riskLevel || (r.risk>=70?'High':(r.risk>=40?'Medium':'Low'));
+      const riskLabel = riskToLabel(r.risk, r.riskLevel);
       const riskClass = riskLabel==='High' ? 'red' : (riskLabel==='Medium' ? 'yellow' : 'green');
       const status = r.status || 'Open';
       const ticketText = r.title || r.ticket || '';
@@ -339,39 +276,51 @@
         <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
         <td>${status}</td>
         <td>
-          <button class="btn green" data-ticket="${ticketText}">Resolve</button>
+          <button class="btn" data-ticket="${ticketText}">Resolve</button>
           <button class="btn" onclick="window.open('${link}','_blank')">Open</button>
         </td>`;
       body.appendChild(tr);
     }
-    body.querySelectorAll('button.btn.green').forEach(btn=>{
+    body.querySelectorAll('button.btn').forEach(btn=>{
+      if(btn.textContent.trim()!=='Resolve') return;
       btn.addEventListener('click', async (e)=>{ await resolveTicket(e.currentTarget.getAttribute('data-ticket')); });
     });
   }
 
-  async function resolveTicket(ticket){
-    const manager = (new URLSearchParams(location.search)).get('by') || 'manager@company.com';
-    const token   = (new URLSearchParams(location.search)).get('token') || TOKEN;
-
-    // Prefer POST; if blocked, fall back to JSONP GET
+  async function loadData(){
     try{
-      const res = await fetch(WEB_APP_URL, {
-        method:'POST', mode:'cors', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({action:'resolve', ticket, by:manager, token})
-      });
-      const data = await res.json();
-      if(data.ok){ toast('✅ Resolved'); loadData(); }
-      else{ toast('⚠️ Could not resolve'); }
-    }catch(_){
-      // JSONP fallback
-      const cb = 'cb_'+Math.random().toString(36).slice(2);
-      window[cb] = (data)=>{ if(data.ok){ toast('✅ Resolved'); loadData(); } else { toast('⚠️ Could not resolve'); } delete window[cb]; s.remove(); };
-      const s = document.createElement('script');
-      s.src = WEB_APP_URL + '?fn=resolve&ticket='+encodeURIComponent(ticket)+'&by='+encodeURIComponent(manager)+'&token='+encodeURIComponent(token)+'&callback='+cb;
-      document.body.appendChild(s);
-    }
+      const data = await fetchFn('alerts');
+      const alerts = Array.isArray(data.alerts) ? data.alerts : [];
+      ALL_ALERTS = alerts;
+      renderQueue(alerts);
+      renderKpis(data.kpis || {});
+    }catch(e){ console.error(e); toast('⚠️ Could not load alerts/KPIs'); }
+    loadRecentAudits(); // do not await
   }
 
+  async function loadRecentAudits(){
+    try{
+      const d = await fetchFn('recent');
+      const rows = d?.rows || (Array.isArray(d) ? d : []);
+      const body = qs('#recentBody'); body.innerHTML = '';
+      rows.forEach(x=>{
+        const label = riskToLabel(x.risk, x.riskLevel);
+        const riskClass = (label==='High'?'red':(label==='Medium'?'yellow':'green'));
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${x.time||''}</td>
+          <td><a href="${x.link||'#'}" target="_blank" rel="noopener">${x.title||x.ticket||''}</a></td>
+          <td>${x.channel||''}</td>
+          <td>${(x.score===undefined||x.score==='')?'-':x.score}</td>
+          <td><span class="pill ${riskClass}">${label}</span></td>
+          <td>${x.source||''}</td>
+          <td title="${(x.issues||'')}">${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}</td>`;
+        body.appendChild(tr);
+      });
+    }catch(e){ console.error(e); /* silent */ }
+  }
+
+  // Quick search
   qs('#searchBox').addEventListener('input', (e)=>{
     const q = e.target.value.toLowerCase().trim();
     if(!q) return renderQueue(ALL_ALERTS);
@@ -384,29 +333,22 @@
     renderQueue(out);
   });
 
-  async function loadRecentAudits(){
+  // Resolve + Quick audit
+  async function resolveTicket(ticket){
     try{
-      const url = new URL(WEB_APP_URL); url.searchParams.set('fn','recent');
-      const r = await fetch(url, {mode:'cors'}).then(x=>x.json()).catch(()=>null);
-      const body = qs('#recentBody'); body.innerHTML = '';
-      const rows = (r && (r.rows||r)) || [];
-      rows.forEach(x=>{
-        const riskClass = (x.riskLevel==='High'?'red':(x.riskLevel==='Medium'?'yellow':'green'));
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${x.time||''}</td>
-          <td><a href="${x.link||'#'}" target="_blank" rel="noopener">${x.title||x.ticket||''}</a></td>
-          <td>${x.channel||''}</td>
-          <td>${(x.score===undefined||x.score==='')?'-':x.score}</td>
-          <td><span class="pill ${riskClass}">${x.riskLevel||''}</span></td>
-          <td>${x.source||''}</td>
-          <td title="${(x.issues||'')}">${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}</td>`;
-        body.appendChild(tr);
-      });
-    }catch(e){ /* silent */ }
+      const res = await fetch(WEB_APP_URL, {
+        method:'POST', mode:'cors', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'resolve', ticket, by:'manager@company.com', token:TOKEN})
+      }).then(x=>x.json()).catch(()=>null);
+
+      if(res && res.ok){ toast('✅ Resolved'); loadData(); return; }
+
+      // fallback via JSONP
+      const d = await fetchFn('resolve', {ticket, by:'manager@company.com', token:TOKEN});
+      if(d && d.ok){ toast('✅ Resolved'); loadData(); } else { toast('⚠️ Could not resolve'); }
+    }catch(_){ toast('⚠️ Resolve failed'); }
   }
 
-  // Modal + actions
   const backdrop = qs('#auditBackdrop');
   const inputs = {
     ticket: qs('#qa_ticket'), channel: qs('#qa_channel'), owner: qs('#qa_owner'),
@@ -418,7 +360,7 @@
     inputs.owner.value   = prefill.owner || '';
     inputs.link.value    = prefill.link || '';
     inputs.score.value   = prefill.score || '';
-    inputs.risk.value    = prefill.risk || 'Low';
+    inputs.risk.value    = prefill.risk || prefill.riskLevel || 'Low';
     inputs.issues.value  = prefill.issues || '';
     backdrop.classList.add('show');
   }
@@ -438,37 +380,25 @@
     };
     if(!payload.ticket){ toast('Ticket/Call/Chat ID is required'); return; }
 
-    // Prefer GET (no CORS); use POST when possible
     try{
-      const res = await fetch(WEB_APP_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-      const data = await res.json();
-      if(data.ok){ toast('✅ Audit saved'); closeAuditModal(); loadData(); }
-      else{ toast('⚠️ Could not save audit'); }
-    }catch(_){
-      const u = new URL(WEB_APP_URL);
-      u.searchParams.set('fn','submitAudit');
-      Object.entries(payload).forEach(([k,v])=>u.searchParams.set(k,String(v)));
-      const cb='cb_'+Math.random().toString(36).slice(2);
-      window[cb]=(d)=>{ if(d.ok){ toast('✅ Audit saved'); closeAuditModal(); loadData(); } else { toast('⚠️ Could not save audit'); } delete window[cb]; s.remove(); };
-      const s=document.createElement('script'); s.src=u.toString()+'&callback='+cb; document.body.appendChild(s);
-    }
+      const r = await fetch(WEB_APP_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }).then(x=>x.json()).catch(()=>null);
+      if(r && r.ok){ toast('✅ Audit saved'); closeAuditModal(); loadData(); return; }
+      const d = await fetchFn('submitAudit', payload);
+      if(d && d.ok){ toast('✅ Audit saved'); closeAuditModal(); loadData(); } else { toast('⚠️ Could not save audit'); }
+    }catch(e){ toast('⚠️ Save failed'); }
   }
 
   async function randomFill(){
     try{
-      const url = new URL(WEB_APP_URL); url.searchParams.set('fn','random');
-      const res = await fetch(url, {mode:'cors'}).then(x=>x.json());
-      if(res && res.ticket){ openAuditModal(res); toast('🎲 Random ticket loaded'); }
+      const data = await fetchFn('random');
+      if(data && data.ticket){ openAuditModal(data); toast('🎲 Random ticket loaded'); }
       else{ openAuditModal(); toast('No candidates found — enter an ID'); }
     }catch(e){ openAuditModal(); toast('No candidates found — enter an ID'); }
   }
 
   document.getElementById('btnOpenQuickAudit').onclick = ()=> openAuditModal();
-  document.getElementById('panelQuickAudit').onclick   = ()=> openAuditModal();
   document.getElementById('btnRandomAudit').onclick    = ()=> randomFill();
-  document.getElementById('panelRandomAudit').onclick  = ()=> randomFill();
   document.getElementById('btnInsights').onclick       = ()=> window.open(INSIGHTS_URL,'_blank');
-  document.getElementById('panelInsights').onclick     = ()=> window.open(INSIGHTS_URL,'_blank');
   document.getElementById('btnRefresh').onclick        = loadData;
   document.getElementById('btnSaveAudit').onclick      = saveAudit;
   document.getElementById('btnRandomFill').onclick     = randomFill;
