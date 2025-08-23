@@ -4,46 +4,104 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Quinn — Command Center</title>
-
-<!-- ==== EDIT ME (constants) ==== -->
-<script>
-  const WEB_APP_URL = 'https://script.google.com/a/macros/thestudio.com/s/AKfycbzabzQA1Gs4n9wy_9QDQyVTvFEpkd-3kAJgXlDhFj2AcQpImvfmYJXZ-5qTWNl0qO3I/exec';
-  const TOKEN       = 'QUINN_PORTAL_0c7a5f8f-1e9a-4b34-9b7d-3e6a9c21f4d8';
-  const INSIGHTS_URL= 'https://lookerstudio.google.com/reporting/YOUR_REPORT_ID';
-</script>
-<!-- ============================ -->
-
 <style>
-  :root{ --cyan:#00F0FF; --green:#3BFF88; --purple:#8A7CFF; --bg:#0B1020; --glass:rgba(255,255,255,.08); }
-  html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 50% 0%, #121832 0%, #0B1020 60%, #05070e 100%);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#e8f7ff}
-  a{color:var(--cyan)}
-  .wrap{max-width:1200px;margin:28px auto;padding:0 16px}
-  .card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter: blur(10px)}
-  .card h2{margin:0;padding:16px 18px 6px;letter-spacing:.3px}
+  :root{
+    --bg:#0B1020;
+    --panel:rgba(255,255,255,.06);
+    --panel2:rgba(255,255,255,.02);
+    --line:rgba(255,255,255,.12);
+    --text:#e8f7ff;
+    --cyan:#00F0FF;
+    --green:#3BFF88;
+    --purple:#8A7CFF;
+    --danger:#FF3B3B;
+    --glass:rgba(255,255,255,.08);
+  }
+  html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 50% 0%, #121832 0%, #0B1020 60%, #05070e 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--cyan);text-decoration:none}
+  .wrap{max-width:1200px;margin:24px auto 60px;padding:0 16px}
+  .card{background:linear-gradient(180deg, var(--panel), var(--panel2));border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter: blur(10px)}
+  .card h2{margin:0;padding:16px 18px 6px;font-size:1.1rem;letter-spacing:.3px}
   .card .body{padding:14px 18px 18px}
 
-  /* Title block */
-  #mainTitle{font-size:2.2rem; line-height:1.2; font-weight:800}
-  .subbrand{margin:2px 18px 4px; color:#cfeaff; opacity:.9; font-size:1.05rem; letter-spacing:.3px}
-  .tagline{margin:0 18px 10px;color:#8A7CFF;opacity:.9;font-style:italic;text-shadow:0 0 6px rgba(138,124,255,.6),0 0 12px rgba(0,240,255,.35)}
+  /* ======= HERO ======= */
+  .titlebar{padding:18px 20px 0}
+  .titlebar h1{margin:0;font-weight:800;letter-spacing:.2px}
+  .titlebar .subtitle{margin:6px 0 4px;color:#bcd8ff;opacity:.95}
+  .titlebar .tagline{margin:0;color:#9fb7ff;opacity:.9;font-style:italic;text-shadow:0 0 6px rgba(138,124,255,.6),0 0 12px rgba(0,240,255,.35)}
 
-  .hud{display:grid;grid-template-columns:1fr;gap:16px}
-  @media(min-width:980px){.hud{grid-template-columns: 1.2fr .8fr}}
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:0 18px 8px}
+  .hero{margin-top:10px;padding:18px}
+  .hero-grid{display:grid;grid-template-columns:minmax(320px,520px) 1fr;gap:18px;align-items:center}
+  @media(max-width:900px){ .hero-grid{grid-template-columns:1fr} }
+
+  /* Left “ribbon” */
+  .ribbon{
+    position:relative;
+    border:1px solid rgba(255,255,255,.14);
+    background:linear-gradient(180deg, rgba(0,240,255,.16), rgba(255,255,255,.02));
+    box-shadow:inset 0 0 24px rgba(0,240,255,.08), 0 10px 36px rgba(0,0,0,.35);
+    border-radius:44px 160px 44px 160px/44px 200px 44px 200px;
+    padding:28px 28px 28px 28px;
+    overflow:hidden;
+    min-height:260px;
+  }
+  .ribbon:after{
+    content:"";
+    position:absolute; right:-160px; top:-30px;
+    width:520px; height:520px; pointer-events:none;
+    background:
+      radial-gradient(closest-side, rgba(0,240,255,.14), rgba(0,240,255,0) 70%),
+      radial-gradient(closest-side, rgba(138,124,255,.12), rgba(138,124,255,0) 70%);
+    filter: blur(4px);
+  }
+  .ribbon .display{font-weight:900; line-height:.95; margin:0 0 10px}
+  .ribbon .display .hl{color:#fff; text-shadow:0 8px 30px rgba(0,0,0,.45), 0 0 24px rgba(0,240,255,.25)}
+  .ribbon .sysline{font-size:1rem;color:#d8e7ff;opacity:.95;margin:0 0 10px}
+  .ribbon .miniTag{font-style:italic;color:#9fb7ff;opacity:.95;margin:0}
+
+  /* Eye host (kept from your previous design, just sized for hero) */
+  .quinn-host{display:grid;place-items:center}
+  .quinn-wrap{position:relative;display:grid;place-items:center;width:min(520px, 92vw);max-width:520px;aspect-ratio:1/1;border-radius:24px;background:radial-gradient(220px 160px at 50% 15%, rgba(0,240,255,.12), rgba(0,0,0,0));box-shadow: inset 0 -10px 40px rgba(0,0,0,.35), inset 0 10px 40px rgba(255,255,255,.02)}
+  .quinn{position:relative;width:70%;height:70%;filter:drop-shadow(0 12px 28px rgba(0,0,0,.6))}
+  .ring{position:absolute;inset:0;border-radius:50%;background:
+    conic-gradient(from 0deg, rgba(255,255,255,.15) 0 10deg, rgba(255,255,255,.04) 10deg 30deg, rgba(255,255,255,.15) 30deg 45deg, rgba(255,255,255,.04) 45deg 70deg, rgba(255,255,255,.15) 70deg 90deg, rgba(255,255,255,.04) 90deg 130deg, rgba(255,255,255,.15) 130deg 150deg, rgba(255,255,255,.04) 150deg 210deg, rgba(255,255,255,.15) 210deg 230deg, rgba(255,255,255,.04) 230deg 270deg, rgba(255,255,255,.15) 270deg 300deg, rgba(255,255,255,.04) 300deg 360deg),
+    radial-gradient(closest-side, rgba(255,255,255,.18), rgba(255,255,255,.06) 60%, rgba(0,0,0,.5) 100%);
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.08), inset 0 0 40px rgba(138,124,255,.15);
+    animation:spin 10s linear infinite;
+  }
+  .sweep{position:absolute;inset:3px;border-radius:50%;background:conic-gradient(from var(--sweep-from,0deg), transparent 0deg, rgba(0,240,255,.18) 30deg, rgba(59,255,136,.18) 45deg, transparent 80deg);filter: blur(2px) drop-shadow(0 0 16px rgba(0,240,255,.45));mix-blend-mode:screen;opacity:.5;animation:sweep 5.6s linear infinite;}
+  .core{position:absolute;inset:26px;border-radius:50%;background:
+    radial-gradient(120px 120px at 50% 45%, rgba(0,240,255,.35), rgba(0,240,255,.08) 60%, rgba(0,0,0,.55) 100%),
+    radial-gradient(100px 70px at 55% 40%, rgba(255,255,255,.45), rgba(255,255,255,0) 60%),
+    radial-gradient(80px 40px at 40% 60%, rgba(255,255,255,.25), rgba(255,255,255,0) 55%),
+    radial-gradient(closest-side, #041018, #060d14 60%, #02060a 100%);
+    box-shadow: inset 0 0 40px rgba(0,240,255,.25), inset 0 0 70px rgba(59,255,136,.18), 0 0 40px rgba(0,240,255,.35);
+    animation:breathe 3.6s ease-in-out infinite;
+  }
+  .iris{position:absolute;inset:78px;border-radius:50%;background:radial-gradient(circle at 50% 45%, rgba(0,240,255,.85), rgba(0,240,255,.15) 45%, rgba(0,0,0,.8) 70%);box-shadow: 0 0 24px rgba(0,240,255,.35), inset 0 0 30px rgba(0,240,255,.55);animation:iris-pulse 5s ease-in-out infinite;}
+  .halo{position:absolute;inset:-14px;border-radius:50%;background: radial-gradient(closest-side, rgba(0,240,255,.12), rgba(0,0,0,0));filter: blur(8px);mix-blend-mode:screen}
+
+  @keyframes spin {to{transform:rotate(360deg)}}
+  @keyframes sweep {to{--sweep-from:360deg}}
+  @keyframes breathe {0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+  @keyframes iris-pulse {0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+  /* ======= TOOLBAR ======= */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:8px 18px 16px}
   .btn{appearance:none;background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.15);color:#e6fbff;padding:10px 14px;border-radius:12px;cursor:pointer;transition:.2s;backdrop-filter: blur(6px);font-weight:600}
   .btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.25), 0 0 24px rgba(0,240,255,.25)}
   .btn.cyan{box-shadow:0 0 0 0 var(--glass), 0 0 18px rgba(0,240,255,.35)}
   .btn.green{box-shadow:0 0 18px rgba(59,255,136,.35)}
   .search{display:flex;gap:8px;align-items:center;margin-left:auto}
-  .search input{flex:1;min-width:160px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e8f7ff;border-radius:10px;padding:10px}
+  .search input{flex:1;min-width:200px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e8f7ff;border-radius:10px;padding:10px}
 
+  /* KPIs & tables (unchanged from previous version) */
   .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
   @media(min-width:680px){.kpis{grid-template-columns:repeat(4,1fr)}}
   .kpi{padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background: radial-gradient(160px 80px at 20% 0%, rgba(0,240,255,.12), rgba(255,255,255,0));box-shadow: inset 0 0 24px rgba(0,240,255,.06)}
   .kpi .label{opacity:.8;font-size:.85rem}
   .kpi .value{font-size:1.6rem;font-weight:700;margin-top:4px}
   .kpi .sub{opacity:.75;font-size:.8rem}
-
   .table-wrap{border:1px solid rgba(255,255,255,.12);border-radius:14px;overflow:auto}
   table{width:100%;border-collapse:separate;border-spacing:0}
   th,td{padding:10px 12px;text-align:left;font-size:.92rem}
@@ -55,9 +113,7 @@
   .pill.yellow{background:rgba(255,190,70,.12);border-color:rgba(255,190,70,.35)}
   .pill.green{background:rgba(59,255,136,.12);border-color:rgba(59,255,136,.35)}
 
-  .toast{position:fixed;right:18px;bottom:18px;background:rgba(20,28,48,.95);border:1px solid rgba(255,255,255,.15);color:#e8f7ff;padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(6px);transition:.25s}
-  .toast.show{opacity:1;transform:translateY(0)}
-
+  /* Modal + toast (unchanged) */
   .backdrop{position:fixed;inset:0;background:rgba(5,7,14,.6);backdrop-filter: blur(4px);display:none;align-items:center;justify-content:center;z-index:999}
   .backdrop.show{display:flex}
   .modal{width:min(720px,92vw);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
@@ -68,73 +124,35 @@
   label{font-size:.85rem;opacity:.9}
   input,select,textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e8f7ff;border-radius:10px;padding:10px}
   textarea{min-height:90px}
-
-  /* ==== Quinn Eye (under title) ==== */
-  .title-eye{display:flex;justify-content:center;align-items:center;margin:4px 0 0 0}
-  .quinn3d{--cyan:#00F0FF;--green:#3BFF88;--purple:#8A7CFF;--danger:#FF3B3B;--glass:rgba(255,255,255,.08);position:relative;width:260px;height:260px}
-  @media (max-width: 560px){ .quinn3d{width:220px;height:220px} }
-  .quinn3d .wrap{position:relative;display:grid;place-items:center;width:100%;height:100%;border-radius:24px;background:radial-gradient(220px 160px at 50% 15%, rgba(0,240,255,.12), transparent);box-shadow: inset 0 -10px 40px rgba(0,0,0,.35), inset 0 10px 40px rgba(255,255,255,.02)}
-  .quinn3d .quinn{position:relative;width:220px;height:220px;filter:drop-shadow(0 12px 28px rgba(0,0,0,.6))}
-  .quinn3d .ring{position:absolute;inset:0;border-radius:50%;background:
-    conic-gradient(from 0deg, rgba(255,255,255,.15) 0 10deg, rgba(255,255,255,.04) 10deg 30deg, rgba(255,255,255,.15) 30deg 45deg, rgba(255,255,255,.04) 45deg 70deg, rgba(255,255,255,.15) 70deg 90deg, rgba(255,255,255,.04) 90deg 130deg, rgba(255,255,255,.15) 130deg 150deg, rgba(255,255,255,.04) 150deg 210deg, rgba(255,255,255,.15) 210deg 230deg, rgba(255,255,255,.04) 230deg 270deg, rgba(255,255,255,.15) 270deg 300deg, rgba(255,255,255,.04) 300deg 360deg),
-    radial-gradient(closest-side, rgba(255,255,255,.18), rgba(255,255,255,.06) 60%, rgba(0,0,0,.5) 100%);
-    box-shadow:inset 0 0 0 2px rgba(255,255,255,.08), inset 0 0 40px rgba(138,124,255,.15);
-    animation: spin var(--ring-speed, 10s) linear infinite }
-  .quinn3d .sweep{position:absolute;inset:3px;border-radius:50%;background:conic-gradient(from var(--sweep-from,0deg), transparent 0deg, rgba(0,240,255,.18) 30deg, rgba(59,255,136,.18) 45deg, transparent 80deg);filter: blur(2px) drop-shadow(0 0 16px rgba(0,240,255,.45));mix-blend-mode:screen;opacity:var(--sweep-opacity, .0);animation: sweep var(--sweep-speed, 6s) linear infinite}
-  .quinn3d .core{position:absolute;inset:24px;border-radius:50%;background:
-    radial-gradient(120px 120px at 50% 45%, rgba(0,240,255,.35), rgba(0,240,255,.08) 60%, rgba(0,0,0,.55) 100%),
-    radial-gradient(100px 70px at 55% 40%, rgba(255,255,255,.45), rgba(255,255,255,0) 60%),
-    radial-gradient(80px 40px at 40% 60%, rgba(255,255,255,.25), rgba(255,255,255,0) 55%),
-    radial-gradient(closest-side, #041018, #060d14 60%, #02060a 100%);
-    box-shadow: inset 0 0 40px rgba(0,240,255,.25), inset 0 0 70px rgba(59,255,136,.18), var(--core-glow, 0 0 40px rgba(0,240,255,.35));
-    animation: breathe var(--breathe-speed, 3.5s) ease-in-out infinite }
-  .quinn3d .iris{position:absolute;inset:74px;border-radius:50%;background:radial-gradient(circle at 50% 45%, rgba(0,240,255,.85), rgba(0,240,255,.15) 45%, rgba(0,0,0,.8) 70%);box-shadow: 0 0 24px rgba(0,240,255,.35), inset 0 0 30px rgba(0,240,255,.55);animation: iris-pulse 5s ease-in-out infinite}
-  .quinn3d .halo{position:absolute;inset:-14px;border-radius:50%;background: radial-gradient(closest-side, rgba(0,240,255,.12), transparent);filter: blur(8px);mix-blend-mode:screen}
-  .quinn3d .particles{position:absolute;inset:-30px;filter: drop-shadow(0 0 6px rgba(138,124,255,.5));pointer-events:none}
-  .quinn3d .particle{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle, #fff, rgba(255,255,255,.2));opacity:.75}
-  .quinn3d .particle:nth-child(1){left:50%;top:0;animation:orbit 12s linear infinite}
-  .quinn3d .particle:nth-child(2){left:90%;top:40%;animation:orbit 16s linear infinite reverse}
-  .quinn3d .particle:nth-child(3){left:10%;top:60%;animation:orbit 14s linear infinite}
-  .quinn3d .particle:nth-child(4){left:70%;top:85%;animation:orbit 18s linear infinite reverse}
-  .quinn3d .particle:nth-child(5){left:20%;top:15%;animation:orbit 20s linear infinite}
-
-  .quinn3d.mode-idle { --ring-speed: 12s; --breathe-speed: 3.8s; --sweep-opacity: .0; --sweep-speed: 8s; }
-  .quinn3d.mode-scan { --ring-speed: 4s;  --breathe-speed: 2.2s; --sweep-opacity: .65; --sweep-speed: 3.2s; }
-  .quinn3d.mode-alert{ --ring-speed: 2.6s; --breathe-speed: 1.6s; --sweep-opacity: .2;  --sweep-speed: 2.2s; }
-  .quinn3d.mode-alert .core{ box-shadow: inset 0 0 50px rgba(255,59,59,.35), 0 0 60px rgba(255,59,59,.45) }
-  .quinn3d.mode-alert .iris{ background:radial-gradient(circle at 50% 45%, rgba(255,59,59,.9), rgba(255,59,59,.15) 45%, rgba(0,0,0,.85) 70%) }
-  .quinn3d.mode-alert .quinn{ animation: alert-shake .7s ease-in-out infinite }
-  @keyframes spin{to{transform:rotate(360deg)}} @keyframes sweep{to{--sweep-from:360deg}}
-  @keyframes breathe{0%,100%{transform:scale(1);filter:drop-shadow(0 0 30px rgba(0,240,255,.35))}50%{transform:scale(1.025);filter:drop-shadow(0 0 60px rgba(0,240,255,.55))}}
-  @keyframes iris-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-  @keyframes orbit{from{transform:rotate(0deg) translateX(40px) rotate(0deg)} to{transform:rotate(360deg) translateX(40px) rotate(-360deg)}}
-  @keyframes alert-shake{0%{transform:translateX(0)}25%{transform:translateX(-2px)}50%{transform:translateX(2px)}75%{transform:translateX(-1px)}100%{transform:translateX(0)}}
+  .toast{position:fixed;right:18px;bottom:18px;background:rgba(20,28,48,.95);border:1px solid rgba(255,255,255,.15);color:#e8f7ff;padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(6px);transition:.25s}
+  .toast.show{opacity:1;transform:translateY(0)}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="card">
-    <h2 id="mainTitle">Quinn — Command Center</h2>
-    <div class="subbrand">THE/STUDIO’s Auto Audit &amp; Redflag System</div>
-    <p class="tagline">The eye that sees all — one agent to bind all risks and bring them to light.</p>
 
-    <!-- Quinn rotating eye directly under title -->
-    <div class="title-eye">
-      <div id="quinnEye" class="quinn3d mode-idle" aria-label="Quinn status indicator">
-        <div class="wrap">
+  <!-- Top title -->
+  <div class="titlebar">
+    <h1 style="font-size:clamp(28px,4.2vw,44px)">Quinn — Command Center</h1>
+  </div>
+
+  <!-- HERO -->
+  <div class="card hero">
+    <div class="hero-grid">
+      <div class="ribbon">
+        <h2 class="display" style="font-size:clamp(56px,10vw,120px)"><span class="hl">Quinn</span></h2>
+        <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
+        <p class="miniTag">The eye that sees all — one agent to bind all risks and bring them to light.</p>
+      </div>
+
+      <div id="quinnHost" class="quinn-host">
+        <div class="quinn-wrap">
           <div class="quinn">
             <div class="halo"></div>
             <div class="ring"></div>
             <div class="sweep"></div>
             <div class="core"></div>
             <div class="iris"></div>
-            <div class="particles">
-              <span class="particle"></span>
-              <span class="particle"></span>
-              <span class="particle"></span>
-              <span class="particle"></span>
-              <span class="particle"></span>
-            </div>
           </div>
         </div>
       </div>
@@ -149,6 +167,7 @@
     </div>
   </div>
 
+  <!-- KPIs -->
   <div class="card"><div class="body">
     <div class="kpis" id="kpis">
       <div class="kpi"><div class="label">High-Risk Open</div><div class="value" id="kpiHigh">–</div><div class="sub">Unresolved</div></div>
@@ -158,7 +177,9 @@
     </div>
   </div></div>
 
-  <div class="hud">
+  <!-- Two-column HUD -->
+  <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px">
+    <!-- High Risk Queue -->
     <div class="card">
       <h2 style="display:flex;align-items:center;gap:8px">🧯 High-Risk Queue <span class="pill red" id="queueCount">0</span></h2>
       <div class="body"><div class="table-wrap"><table>
@@ -171,6 +192,7 @@
       </table></div></div>
     </div>
 
+    <!-- Right column -->
     <div style="display:flex;flex-direction:column;gap:16px">
       <div class="card">
         <h2>🎛️ Quick Panels</h2>
@@ -178,7 +200,7 @@
           <div class="card" style="border-radius:14px">
             <h2 style="font-size:1rem">Quick Audit</h2>
             <div class="body">
-              <p style="opacity:.85">Launch a lightweight audit: enter a ticket/call/chat ID, score & notes, and save directly to the log.</p>
+              <p style="opacity:.85">Launch a lightweight audit: enter a ticket/call/chat ID, score &amp; notes, and save directly to the log.</p>
               <button class="btn green" id="panelQuickAudit">Open Quick Audit</button>
               <button class="btn" id="panelRandomAudit">Random Audit</button>
             </div>
@@ -194,7 +216,7 @@
             <h2 style="font-size:1rem">Slack Smart-Resolve</h2>
             <div class="body">
               <p style="opacity:.85">Use this URL in your Slack alert button (replace placeholders):</p>
-              <code style="font-size:.8rem;opacity:.95;word-break:break-all">WEB_APP_URL?action=resolve&ticket=01-ABC123&by=carol@org.com&token=YOUR_TOKEN&slack=1&redirect=YOUR_SITES_URL</code>
+              <code style="font-size:.8rem;opacity:.95;word-break:break-all">WEB_APP_URL?fn=resolve&amp;ticket=01-ABC123&amp;by=carol@org.com&amp;token=YOUR_TOKEN&amp;slack=1&amp;redirect=YOUR_SITES_URL</code>
             </div>
           </div>
         </div>
@@ -241,86 +263,60 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  /* ---------- helpers ---------- */
-  const qs = (s,root=document)=>root.querySelector(s);
-  const toast = (msg)=>{ const t=qs('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); };
+  /* ====== EDIT THESE THREE IF NEEDED ====== */
+  const WEB_APP_URL = https://script.google.com/a/macros/thestudio.com/s/AKfycbzabzQA1Gs4n9wy_9QDQyVTvFEpkd-3kAJgXlDhFj2AcQpImvfmYJXZ-5qTWNl0qO3I/exec';
+  const TOKEN       = 'QUINN_PORTAL_0c7a5f8f-1e9a-4b34-9b7d-3e6a9c21f4d8';
+  const INSIGHTS_URL= 'https://lookerstudio.google.com/reporting/YOUR_REPORT_ID';
+  /* ======================================== */
 
-  // JSONP fallback (for CORS flakiness)
-  function jsonp(url, paramName='callback', timeoutMs=8000){
-    return new Promise((resolve,reject)=>{
-      const cbName = '__qc' + Math.random().toString(36).slice(2);
-      const sep = url.includes('?') ? '&' : '?';
-      const src = url + sep + paramName + '=' + cbName;
-      const s = document.createElement('script');
-      const timer = setTimeout(()=>{ cleanup(); reject(new Error('jsonp-timeout')); }, timeoutMs);
-      function cleanup(){ clearTimeout(timer); delete window[cbName]; s.remove(); }
-      window[cbName] = (data)=>{ cleanup(); resolve(data); };
-      s.src = src; s.onerror = ()=>{ cleanup(); reject(new Error('jsonp-error')); };
-      document.head.appendChild(s);
-    });
-  }
-
-  async function getJSONWithFallback(paramsObj){
-    const u = new URL(WEB_APP_URL);
-    Object.entries(paramsObj||{}).forEach(([k,v])=>u.searchParams.set(k,v));
-    try{
-      const res = await fetch(u, {mode:'cors'});
-      if(!res.ok) throw new Error('http '+res.status);
-      return await res.json();
-    }catch(_){
-      // fallback via JSONP
-      return await jsonp(u.toString(), 'callback');
-    }
-  }
-
-  /* ---------- Quinn Eye controller ---------- */
-  (()=>{
-    const host = document.getElementById('quinnEye');
-    if(!host) return;
-    function setMode(mode){
-      host.classList.remove('mode-idle','mode-scan','mode-alert');
-      host.classList.add('mode-' + (mode || 'idle'));
-    }
-    const iris = host.querySelector('.iris');
-    const rect = host.querySelector('.wrap');
-    rect.addEventListener('mousemove', (e)=>{
-      const r = rect.getBoundingClientRect();
+  // Eye: gentle parallax
+  (function(){
+    const iris = document.querySelector('.iris');
+    const rectEl = document.querySelector('.quinn-wrap');
+    rectEl.addEventListener('mousemove', (e)=>{
+      const r = rectEl.getBoundingClientRect();
       const x = (e.clientX - (r.left + r.width/2)) / (r.width/2);
       const y = (e.clientY - (r.top + r.height/2)) / (r.height/2);
       iris.style.transform = `translate(${x*4}px, ${y*3}px) scale(1.02)`;
     });
-    rect.addEventListener('mouseleave', ()=>{ iris.style.transform = 'translate(0,0) scale(1)'; });
-    window.QuinnEye = { setMode };
+    rectEl.addEventListener('mouseleave', ()=>{ iris.style.transform = 'translate(0,0) scale(1)'; });
   })();
 
-  /* ---------- data rendering ---------- */
+  /* ========= Portal logic ========= */
   let ALL_ALERTS = [];
+  const qs = (s,root=document)=>root.querySelector(s);
+  const toast = (msg)=>{ const t=qs('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); };
+
+  /* Fetch with JSONP fallback to dodge any CORS policy */
+  function fetchAlertsWithFallback(){
+    const url = new URL(WEB_APP_URL);
+    url.searchParams.set('fn','alerts');
+    return fetch(url, {mode:'cors'})
+      .then(r=>r.json())
+      .catch(()=> new Promise((resolve, reject)=>{
+        const cb = 'cb_'+Math.random().toString(36).slice(2);
+        window[cb] = (data)=>{ resolve(data); delete window[cb]; s.remove(); };
+        const s = document.createElement('script');
+        s.src = WEB_APP_URL + '?fn=alerts&callback=' + cb;
+        s.onerror = ()=>{ reject(new Error('jsonp failed')); delete window[cb]; s.remove(); };
+        document.body.appendChild(s);
+      }));
+  }
 
   async function loadData(){
     try{
-      const data = await getJSONWithFallback({ fn:'alerts' });
+      const data = await fetchAlertsWithFallback();
       if(Array.isArray(data.alerts)){
         ALL_ALERTS = data.alerts;
         renderQueue(ALL_ALERTS);
         renderKpis(data.kpis || {});
-        try{
-          const highOpen = Number((data.kpis && (data.kpis.highOpen ?? data.kpis.highRisk)) || 0);
-          if (window.QuinnEye && window.QuinnEye.setMode) {
-            window.QuinnEye.setMode(highOpen > 0 ? 'alert' : (ALL_ALERTS.length ? 'scan' : 'idle'));
-          }
-        }catch(_){}
-      }else{
-        toast('⚠️ Could not load alerts/KPIs');
       }
       await loadRecentAudits();
-    }catch(e){
-      console.error(e);
-      toast('⚠️ Could not load alerts/KPIs');
-    }
+    }catch(e){ console.error(e); toast('⚠️ Could not load alerts/KPIs'); }
   }
 
   function renderKpis(k){
-    qs('#kpiHigh').textContent = k.highOpen ?? k.highRisk ?? '–';
+    qs('#kpiHigh').textContent = k.highRisk ?? k.highOpen ?? '–';
     qs('#kpiMed').textContent  = k.medOpen  ?? '–';
     qs('#kpiRes7').textContent = k.resolved7d ?? '–';
     qs('#kpiScore').textContent= k.avgScore7d ?? k.avgScore ?? '–';
@@ -349,16 +345,15 @@
       body.appendChild(tr);
     }
     body.querySelectorAll('button.btn.green').forEach(btn=>{
-      btn.addEventListener('click', async (e)=>{
-        const ticket = e.currentTarget.getAttribute('data-ticket');
-        await resolveTicket(ticket);
-      });
+      btn.addEventListener('click', async (e)=>{ await resolveTicket(e.currentTarget.getAttribute('data-ticket')); });
     });
   }
 
   async function resolveTicket(ticket){
     const manager = (new URLSearchParams(location.search)).get('by') || 'manager@company.com';
     const token   = (new URLSearchParams(location.search)).get('token') || TOKEN;
+
+    // Prefer POST; if blocked, fall back to JSONP GET
     try{
       const res = await fetch(WEB_APP_URL, {
         method:'POST', mode:'cors', headers:{'Content-Type':'application/json'},
@@ -367,7 +362,14 @@
       const data = await res.json();
       if(data.ok){ toast('✅ Resolved'); loadData(); }
       else{ toast('⚠️ Could not resolve'); }
-    }catch(e){ toast('⚠️ Resolve failed'); }
+    }catch(_){
+      // JSONP fallback
+      const cb = 'cb_'+Math.random().toString(36).slice(2);
+      window[cb] = (data)=>{ if(data.ok){ toast('✅ Resolved'); loadData(); } else { toast('⚠️ Could not resolve'); } delete window[cb]; s.remove(); };
+      const s = document.createElement('script');
+      s.src = WEB_APP_URL + '?fn=resolve&ticket='+encodeURIComponent(ticket)+'&by='+encodeURIComponent(manager)+'&token='+encodeURIComponent(token)+'&callback='+cb;
+      document.body.appendChild(s);
+    }
   }
 
   qs('#searchBox').addEventListener('input', (e)=>{
@@ -384,9 +386,11 @@
 
   async function loadRecentAudits(){
     try{
-      const d = await getJSONWithFallback({ fn:'recent' });
+      const url = new URL(WEB_APP_URL); url.searchParams.set('fn','recent');
+      const r = await fetch(url, {mode:'cors'}).then(x=>x.json()).catch(()=>null);
       const body = qs('#recentBody'); body.innerHTML = '';
-      (d.rows||d||[]).forEach(x=>{
+      const rows = (r && (r.rows||r)) || [];
+      rows.forEach(x=>{
         const riskClass = (x.riskLevel==='High'?'red':(x.riskLevel==='Medium'?'yellow':'green'));
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -402,13 +406,13 @@
     }catch(e){ /* silent */ }
   }
 
-  /* modal + quick audit */
+  // Modal + actions
   const backdrop = qs('#auditBackdrop');
   const inputs = {
     ticket: qs('#qa_ticket'), channel: qs('#qa_channel'), owner: qs('#qa_owner'),
     link: qs('#qa_link'), score: qs('#qa_score'), risk: qs('#qa_risk'), issues: qs('#qa_issues')
   };
-  const openAuditModal = (prefill={})=>{
+  function openAuditModal(prefill={}){
     inputs.ticket.value  = prefill.ticket || '';
     inputs.channel.value = prefill.channel || 'Ticket';
     inputs.owner.value   = prefill.owner || '';
@@ -417,8 +421,8 @@
     inputs.risk.value    = prefill.risk || 'Low';
     inputs.issues.value  = prefill.issues || '';
     backdrop.classList.add('show');
-  };
-  const closeAuditModal = ()=> backdrop.classList.remove('show');
+  }
+  function closeAuditModal(){ backdrop.classList.remove('show'); }
   document.getElementById('btnCloseModal').onclick = closeAuditModal;
 
   async function saveAudit(){
@@ -433,18 +437,28 @@
       issues: inputs.issues.value.trim()
     };
     if(!payload.ticket){ toast('Ticket/Call/Chat ID is required'); return; }
+
+    // Prefer GET (no CORS); use POST when possible
     try{
       const res = await fetch(WEB_APP_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
       const data = await res.json();
       if(data.ok){ toast('✅ Audit saved'); closeAuditModal(); loadData(); }
       else{ toast('⚠️ Could not save audit'); }
-    }catch(e){ toast('⚠️ Save failed'); }
+    }catch(_){
+      const u = new URL(WEB_APP_URL);
+      u.searchParams.set('fn','submitAudit');
+      Object.entries(payload).forEach(([k,v])=>u.searchParams.set(k,String(v)));
+      const cb='cb_'+Math.random().toString(36).slice(2);
+      window[cb]=(d)=>{ if(d.ok){ toast('✅ Audit saved'); closeAuditModal(); loadData(); } else { toast('⚠️ Could not save audit'); } delete window[cb]; s.remove(); };
+      const s=document.createElement('script'); s.src=u.toString()+'&callback='+cb; document.body.appendChild(s);
+    }
   }
 
   async function randomFill(){
     try{
-      const data = await getJSONWithFallback({ fn:'random' });
-      if(data && data.ticket){ openAuditModal(data); toast('🎲 Random ticket loaded'); }
+      const url = new URL(WEB_APP_URL); url.searchParams.set('fn','random');
+      const res = await fetch(url, {mode:'cors'}).then(x=>x.json());
+      if(res && res.ticket){ openAuditModal(res); toast('🎲 Random ticket loaded'); }
       else{ openAuditModal(); toast('No candidates found — enter an ID'); }
     }catch(e){ openAuditModal(); toast('No candidates found — enter an ID'); }
   }
