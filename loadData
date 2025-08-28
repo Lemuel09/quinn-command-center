@@ -104,11 +104,20 @@
         <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
         <p class="miniTag">The eye that sees all — one agent to bind all risks and bring them to light.</p>
         <div class="toolbar" style="padding-left:0">
-          <button class="btn" id="btnOpenQuickAudit">➕ Quick Audit</button>
-          <button class="btn" id="btnRandomAudit">🎲 Random Audit</button>
-          <button class="btn" id="btnInsights">📊 View Insights</button>
-          <button class="btn" id="btnRefresh">🔄 Refresh</button>
-        </div>
+          <div class="toolbar" style="padding-left:0">
+  <button class="btn" id="btnOpenQuickAudit">➕ Quick Audit</button>
+  <button class="btn" id="btnRandomAudit">🎲 Random Audit</button>
+  <button class="btn" id="btnInsights">📊 View Insights</button>
+  <button class="btn" id="btnRefresh">🔄 Refresh</button>
+
+  <!-- DEMO BUTTONS -->
+  <button class="btn" id="btnTicketDemo">🎫 Run Ticket Demo</button>
+  <button class="btn" id="btnCallDemo">📞 Run Call Demo</button>
+</div>
+
+<!-- Status feedback -->
+<div id="demoStatus" style="margin-top:10px;color:var(--green);font-weight:bold;"></div>
+
       </div>
 
       <div id="quinnHost" class="quinn-host">
@@ -396,15 +405,39 @@
     }catch(e){ openAuditModal(); toast('No candidates found — enter an ID'); }
   }
 
-  document.getElementById('btnOpenQuickAudit').onclick = ()=> openAuditModal();
+    document.getElementById('btnOpenQuickAudit').onclick = ()=> openAuditModal();
   document.getElementById('btnRandomAudit').onclick    = ()=> randomFill();
   document.getElementById('btnInsights').onclick       = ()=> window.open(INSIGHTS_URL,'_blank');
   document.getElementById('btnRefresh').onclick        = loadData;
   document.getElementById('btnSaveAudit').onclick      = saveAudit;
   document.getElementById('btnRandomFill').onclick     = randomFill;
 
+  // === DEMO BUTTONS ===
+  document.getElementById('btnTicketDemo').onclick = async () => {
+    qs('#demoStatus').textContent = "⏳ Running Ticket Demo...";
+    try {
+      const res = await fetchFn('runTicketDemo');
+      qs('#demoStatus').textContent = res || "✅ Ticket Demo done";
+      loadData();
+    } catch (e) {
+      qs('#demoStatus').textContent = "❌ Ticket Demo failed";
+    }
+  };
+
+  document.getElementById('btnCallDemo').onclick = async () => {
+    qs('#demoStatus').textContent = "⏳ Running Call Demo...";
+    try {
+      const res = await fetchFn('runCallDemo');
+      qs('#demoStatus').textContent = res || "✅ Call Demo done";
+      loadData();
+    } catch (e) {
+      qs('#demoStatus').textContent = "❌ Call Demo failed";
+    }
+  };
+
   loadData();
   setInterval(loadRecentAudits, 10000);
 </script>
 </body>
 </html>
+
