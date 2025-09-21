@@ -7,7 +7,7 @@
 <style>
   :root{
     --bg:#0B1020; --panel:rgba(255,255,255,.06); --panel2:rgba(255,255,255,.02);
-    --line:rgba(255,255,255,.12); --text:#e8f7ff; --cyan:#00F0FF; --green:#3BFF88; --purple:#8A7CFF;
+    --line:rgba(255,255,255,.12); --text:#e8f7ff; --cyan:#00E5FF; --green:#46FF9A; --purple:#A88CFF;
   }
   html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 50% 0%, #121832 0%, #0B1020 60%, #05070e 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
   a{color:var(--cyan);text-decoration:none}
@@ -94,7 +94,7 @@
 <body>
 <div class="wrap">
   <div class="titlebar">
-    <h1>Quinn — Command Center</h1>
+    <h1>Takumi — Command Center</h1>
   </div>
 
  <div class="card hero">
@@ -102,9 +102,9 @@
 
     <!-- LEFT: text -->
     <div class="hero-copy">
-      <h2>Quinn</h2>
-      <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
-      <p class="miniTag">The one AI agent to bind all risks and bring them to light...</p>
+      <h2>Takumi</h2>
+      <p class="sysline">THE/STUDIO’s Quality &amp; AI Red-Flag System</p>
+      <p class="miniTag">Crafted with Monozukuri spirit — precision AI for risk and quality.</p>
 
       <!-- Toolbar -->
       <div class="toolbar" style="padding-left:0">
@@ -215,7 +215,7 @@
 <script>
   /* ====== EDIT THESE THREE ====== */
   const WEB_APP_URL = 'https://script.google.com/a/macros/thestudio.com/s/AKfycbzabzQA1Gs4n9wy_9QDQyVTvFEpkd-3kAJgXlDhFj2AcQpImvfmYJXZ-5qTWNl0qO3I/exec';
-  const TOKEN       = 'QUINN_PORTAL_0c7a5f8f-1e9a-4b34-9b7d-3e6a9c21f4d8';
+  const TOKEN       = 'TAKUMI_PORTAL_0c7a5f8f-1e9a-4b34-9b7d-3e6a9c21f4d8';
   const INSIGHTS_URL= 'https://lookerstudio.google.com/reporting/YOUR_REPORT_ID';
   /* ============================== */
 
@@ -410,7 +410,7 @@
     }catch(e){ openAuditModal(); toast('No candidates found — enter an ID'); }
   }
 
-    document.getElementById('btnOpenQuickAudit').onclick = ()=> openAuditModal();
+  document.getElementById('btnOpenQuickAudit').onclick = ()=> openAuditModal();
   document.getElementById('btnRandomAudit').onclick    = ()=> randomFill();
   document.getElementById('btnInsights').onclick       = ()=> window.open(INSIGHTS_URL,'_blank');
   document.getElementById('btnRefresh').onclick        = loadData;
@@ -445,4 +445,3 @@
 </script>
 </body>
 </html>
-
