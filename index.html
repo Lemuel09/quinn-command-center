@@ -35,62 +35,102 @@
   .quinn-wrap{position:relative;display:grid;place-items:center;width:min(520px, 92vw);max-width:520px;aspect-ratio:1/1;border-radius:24px;
     background:radial-gradient(220px 160px at 50% 15%, rgba(0,240,255,.10), rgba(0,0,0,0));box-shadow: inset 0 -10px 40px rgba(0,0,0,.35), inset 0 10px 40px rgba(255,255,255,.02)}
   .quinn{position:relative;width:70%;height:70%;filter:drop-shadow(0 12px 28px rgba(0,0,0,.6))}
-  /* Takumi Warrior Monk Hat + Eyes */
+  /* === TAKUMI HAT + EYES === */
+  .takumi-wrapper {
+    position:relative;
+    width:100%;
+    height:100%;
+  }
+
+  /* Hat */
   .takumi-hat {
     position:absolute;
-    inset:60px;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:70%; height:70%;
     border-radius:50%;
-    background:radial-gradient(circle at 50% 50%, #111 30%, #1a1a1a 60%, transparent 100%);
-    border:6px solid var(--cyan);
-    box-shadow:0 0 25px var(--cyan), inset 0 0 40px rgba(0,229,255,.4);
-    animation:hat-spin 6s linear infinite;
+    background:radial-gradient(circle at 50% 60%, #111 20%, #1b1b1b 55%, #000 80%);
+    border:4px solid var(--cyan);
+    box-shadow:0 0 15px rgba(0,229,255,.4), inset 0 0 40px rgba(0,229,255,.2);
+    animation:hat-spin 8s linear infinite;
+    z-index:2;
   }
   .takumi-hat::after {
     content:"";
     position:absolute;
     top:50%; left:50%;
     transform:translate(-50%,-50%);
-    width:25%; height:25%;
+    width:28%; height:28%;
     border-radius:50%;
-    background:radial-gradient(circle, var(--purple), transparent 70%);
-    box-shadow:0 0 20px var(--purple), 0 0 35px var(--cyan);
+    background:radial-gradient(circle, var(--purple) 0%, transparent 70%);
+    box-shadow:0 0 12px var(--purple), 0 0 25px var(--cyan);
   }
-  .takumi-hat-glow {
-    position:absolute;
-    inset:50px;
-    border-radius:50%;
-    border:2px dashed rgba(0,229,255,.5);
-    animation:glow-rotate 12s linear infinite;
-  }
+
+  /* Eyes */
   .takumi-eyes {
     position:absolute;
-    bottom:70px;
-    left:50%;
+    bottom:22%; left:50%;
     transform:translateX(-50%);
     display:flex;
-    gap:40px;
+    gap:38px;
+    z-index:1;
   }
   .takumi-eyes .eye {
-    width:22px; height:12px;
+    width:22px; height:14px;
     border-radius:50%;
-    background:radial-gradient(circle at 50% 40%, #00e5ff 0%, #006a88 70%);
-    box-shadow:0 0 15px var(--cyan), 0 0 25px var(--purple);
-    animation:eye-glow 2.4s ease-in-out infinite;
+    background:radial-gradient(circle at 50% 40%, #00e5ff 0%, #005566 70%);
+    box-shadow:0 0 12px var(--cyan), 0 0 18px var(--purple);
+    transition:transform 0.15s ease-out;
+    animation:eye-glow 2.8s ease-in-out infinite;
   }
-  .takumi-eyes .eye.right { animation-delay:1.2s; }
+  .takumi-eyes .eye.right { animation-delay:1.4s; }
 
+  /* Animations */
   @keyframes hat-spin {
-    from { transform:rotate(0deg); }
-    to   { transform:rotate(360deg); }
-  }
-  @keyframes glow-rotate {
-    from { transform:rotate(0deg); }
-    to   { transform:rotate(-360deg); }
+    from { transform:translate(-50%,-50%) rotate(0deg); }
+    to   { transform:translate(-50%,-50%) rotate(360deg); }
   }
   @keyframes eye-glow {
-    0%,100% { opacity:1; transform:scale(1); }
-    50% { opacity:.6; transform:scale(1.15); }
+    0%,100% { opacity:1; }
+    50% { opacity:.7; }
   }
+
+  /* TOOLBAR */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:8px 0 0}
+  .btn{appearance:none;background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.15);color:#e6fbff;padding:10px 14px;border-radius:12px;cursor:pointer;transition:.2s;backdrop-filter: blur(6px);font-weight:600}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.25), 0 0 24px rgba(0,240,255,.25)}
+
+  /* KPI + tables (unchanged from your original) */
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(min-width:680px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background: radial-gradient(160px 80px at 20% 0%, rgba(0,240,255,.12), rgba(255,255,255,0));box-shadow: inset 0 0 24px rgba(0,240,255,.06)}
+  .kpi .label{opacity:.8;font-size:.85rem}
+  .kpi .value{font-size:1.6rem;font-weight:700;margin-top:4px}
+  .kpi .sub{opacity:.75;font-size:.8rem}
+  .table-wrap{border:1px solid rgba(255,255,255,.12);border-radius:14px;overflow:auto}
+  table{width:100%;border-collapse:separate;border-spacing:0}
+  th,td{padding:10px 12px;text-align:left;font-size:.92rem}
+  thead th{position:sticky;top:0;background:rgba(11,16,32,.9);backdrop-filter: blur(6px);z-index:1}
+  tbody tr{border-bottom:1px solid rgba(255,255,255,.08)}
+  tbody tr:hover{background:rgba(255,255,255,.03)}
+  .pill{display:inline-flex;gap:6px;align-items:center;font-size:.75rem;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+  .pill.red{background:rgba(255,59,59,.15);border-color:rgba(255,59,59,.35)}
+  .pill.yellow{background:rgba(255,190,70,.12);border-color:rgba(255,190,70,.35)}
+  .pill.green{background:rgba(59,255,136,.12);border-color:rgba(59,255,136,.35)}
+
+  /* Modal + toast (unchanged) */
+  .backdrop{position:fixed;inset:0;background:rgba(5,7,14,.6);backdrop-filter: blur(4px);display:none;align-items:center;justify-content:center;z-index:999}
+  .backdrop.show{display:flex}
+  .modal{width:min(720px,92vw);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+  .modal header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px}
+  .modal .content{padding:0 16px 16px}
+  .grid{display:grid;gap:10px;grid-template-columns:1fr}
+  @media(min-width:680px){.grid{grid-template-columns:1fr 1fr}}
+  label{font-size:.85rem;opacity:.9}
+  input,select,textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e8f7ff;border-radius:10px;padding:10px}
+  textarea{min-height:90px}
+  .toast{position:fixed;right:18px;bottom:18px;background:rgba(20,28,48,.95);border:1px solid rgba(255,255,255,.15);color:#e8f7ff;padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(6px);transition:.25s}
+  .toast.show{opacity:1;transform:translateY(0)}
 </style>
 </head>
 <body>
@@ -105,8 +145,8 @@
     <!-- LEFT: text -->
     <div class="hero-copy">
       <h2>Takumi</h2>
-      <p class="sysline">THE/STUDIO’s Quality &amp; AI Red-Flag System</p>
-      <p class="miniTag">Crafted with Monozukuri spirit — precision AI for risk and quality.</p>
+      <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
+      <p class="miniTag">The warrior monk AI — always watching, always guarding…</p>
 
       <!-- Toolbar -->
       <div class="toolbar" style="padding-left:0">
@@ -128,11 +168,12 @@
     <div id="quinnHost" class="quinn-host">
       <div class="quinn-wrap">
         <div class="quinn">
-          <div class="takumi-hat"></div>
-          <div class="takumi-hat-glow"></div>
-          <div class="takumi-eyes">
-            <div class="eye left"></div>
-            <div class="eye right"></div>
+          <div class="takumi-wrapper">
+            <div class="takumi-hat"></div>
+            <div class="takumi-eyes">
+              <div class="eye left"></div>
+              <div class="eye right"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -219,33 +260,36 @@
   const INSIGHTS_URL= 'https://lookerstudio.google.com/reporting/YOUR_REPORT_ID';
   /* ============================== */
 
-  // === Takumi Eye Tracking ===
+  // ==== TAKUMI EYE TRACKING ====
   (function(){
     const eyes = document.querySelectorAll('.takumi-eyes .eye');
-    const wrap = document.querySelector('.quinn-wrap');
+    const wrap = document.querySelector('.takumi-wrapper');
 
-    wrap.addEventListener('mousemove', (e)=>{
-      const r = wrap.getBoundingClientRect();
-      const x = (e.clientX - (r.left + r.width/2)) / (r.width/2);
-      const y = (e.clientY - (r.top + r.height/2)) / (r.height/2);
+    if (wrap && eyes.length) {
+      wrap.addEventListener('mousemove', (e)=>{
+        const r = wrap.getBoundingClientRect();
+        const x = (e.clientX - (r.left + r.width/2)) / (r.width/2);
+        const y = (e.clientY - (r.top + r.height/2)) / (r.height/2);
 
-      eyes.forEach(eye=>{
-        eye.style.transform = `translate(${x*6}px, ${y*4}px) scale(1.05)`;
+        eyes.forEach(eye=>{
+          eye.style.transform = `translate(${x*6}px, ${y*4}px)`;
+        });
       });
-    });
-    wrap.addEventListener('mouseleave', ()=>{
-      eyes.forEach(eye=>{
-        eye.style.transform = 'translate(0,0) scale(1)';
+      wrap.addEventListener('mouseleave', ()=>{
+        eyes.forEach(eye=>{
+          eye.style.transform = 'translate(0,0)';
+        });
       });
-    });
+    }
   })();
+  // ==============================
 
   // Utilities
   const qs = (s,root=document)=>root.querySelector(s);
   const toast = (msg)=>{ const t=qs('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); };
 
   // Generic fetch with JSONP fallback
-  function fetchFn(fn, params={}) {
+  function fetchFn(fn, params={}){
     const u = new URL(WEB_APP_URL);
     u.searchParams.set('fn', fn);
     Object.entries(params).forEach(([k,v])=>u.searchParams.set(k, v));
