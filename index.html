@@ -7,8 +7,7 @@
 <style>
   :root{
     --bg:#0B1020; --panel:rgba(255,255,255,.06); --panel2:rgba(255,255,255,.02);
-    --line:rgba(255,255,255,.12); --text:#e8f7ff;
-    --cyan:#00E5FF; --green:#46FF9A; --purple:#A88CFF;
+    --line:rgba(255,255,255,.12); --text:#e8f7ff; --cyan:#00F0FF; --green:#3BFF88; --purple:#8A7CFF;
   }
   html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 50% 0%, #121832 0%, #0B1020 60%, #05070e 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
   a{color:var(--cyan);text-decoration:none}
@@ -31,76 +30,28 @@
   .hero-copy .sysline{font-size:1rem;color:#d8e7ff;opacity:.95;margin:0 0 6px}
   .hero-copy .miniTag{font-style:italic;color:#9fb7ff;opacity:.95;margin:0}
 
-  .quinn-host{display:grid;place-items:center}
-  .quinn-wrap{position:relative;display:grid;place-items:center;width:min(520px, 92vw);max-width:520px;aspect-ratio:1/1;border-radius:24px;
-    background:radial-gradient(220px 160px at 50% 15%, rgba(0,240,255,.10), rgba(0,0,0,0));box-shadow: inset 0 -10px 40px rgba(0,0,0,.35), inset 0 10px 40px rgba(255,255,255,.02)}
-  .quinn{position:relative;width:70%;height:70%;filter:drop-shadow(0 12px 28px rgba(0,0,0,.6))}
-  /* === TAKUMI HAT + EYES === */
-  .takumi-wrapper {
-    position:relative;
-    width:100%;
-    height:100%;
-  }
-
-  /* Hat */
-  .takumi-hat {
-    position:absolute;
-    top:50%; left:50%;
-    transform:translate(-50%,-50%);
-    width:70%; height:70%;
-    border-radius:50%;
-    background:radial-gradient(circle at 50% 60%, #111 20%, #1b1b1b 55%, #000 80%);
-    border:4px solid var(--cyan);
-    box-shadow:0 0 15px rgba(0,229,255,.4), inset 0 0 40px rgba(0,229,255,.2);
-    animation:hat-spin 8s linear infinite;
-    z-index:2;
-  }
-  .takumi-hat::after {
-    content:"";
-    position:absolute;
-    top:50%; left:50%;
-    transform:translate(-50%,-50%);
-    width:28%; height:28%;
-    border-radius:50%;
-    background:radial-gradient(circle, var(--purple) 0%, transparent 70%);
-    box-shadow:0 0 12px var(--purple), 0 0 25px var(--cyan);
-  }
-
-  /* Eyes */
-  .takumi-eyes {
-    position:absolute;
-    bottom:22%; left:50%;
-    transform:translateX(-50%);
-    display:flex;
-    gap:38px;
-    z-index:1;
-  }
-  .takumi-eyes .eye {
-    width:22px; height:14px;
-    border-radius:50%;
-    background:radial-gradient(circle at 50% 40%, #00e5ff 0%, #005566 70%);
-    box-shadow:0 0 12px var(--cyan), 0 0 18px var(--purple);
-    transition:transform 0.15s ease-out;
-    animation:eye-glow 2.8s ease-in-out infinite;
-  }
-  .takumi-eyes .eye.right { animation-delay:1.4s; }
-
-  /* Animations */
-  @keyframes hat-spin {
-    from { transform:translate(-50%,-50%) rotate(0deg); }
-    to   { transform:translate(-50%,-50%) rotate(360deg); }
-  }
-  @keyframes eye-glow {
-    0%,100% { opacity:1; }
-    50% { opacity:.7; }
-  }
-
-  /* TOOLBAR */
+  /* Toolbar */
   .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:8px 0 0}
   .btn{appearance:none;background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.15);color:#e6fbff;padding:10px 14px;border-radius:12px;cursor:pointer;transition:.2s;backdrop-filter: blur(6px);font-weight:600}
   .btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.25), 0 0 24px rgba(0,240,255,.25)}
 
-  /* KPI + tables (unchanged from your original) */
+  /* Takumi Video */
+  .takumi-video {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 520px;
+    margin: auto;
+  }
+  .takumi-video video {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    filter: drop-shadow(0 0 25px rgba(0,229,255,0.3));
+  }
+
+  /* KPI + tables */
   .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
   @media(min-width:680px){.kpis{grid-template-columns:repeat(4,1fr)}}
   .kpi{padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background: radial-gradient(160px 80px at 20% 0%, rgba(0,240,255,.12), rgba(255,255,255,0));box-shadow: inset 0 0 24px rgba(0,240,255,.06)}
@@ -118,7 +69,7 @@
   .pill.yellow{background:rgba(255,190,70,.12);border-color:rgba(255,190,70,.35)}
   .pill.green{background:rgba(59,255,136,.12);border-color:rgba(59,255,136,.35)}
 
-  /* Modal + toast (unchanged) */
+  /* Modal + toast */
   .backdrop{position:fixed;inset:0;background:rgba(5,7,14,.6);backdrop-filter: blur(4px);display:none;align-items:center;justify-content:center;z-index:999}
   .backdrop.show{display:flex}
   .modal{width:min(720px,92vw);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
@@ -138,49 +89,45 @@
   <div class="titlebar">
     <h1>Takumi — Command Center</h1>
   </div>
+  <!-- HERO -->
+  <div class="card hero">
+    <div class="hero-grid">
 
- <div class="card hero">
-  <div class="hero-grid">
+      <!-- LEFT: text -->
+      <div class="hero-copy">
+        <h2>Takumi</h2>
+        <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
+        <p class="miniTag">The one AI agent to bind all risks and bring them to light...</p>
 
-    <!-- LEFT: text -->
-    <div class="hero-copy">
-      <h2>Takumi</h2>
-      <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
-      <p class="miniTag">The warrior monk AI — always watching, always guarding…</p>
+        <!-- Toolbar -->
+        <div class="toolbar" style="padding-left:0">
+          <button class="btn" id="btnOpenQuickAudit">➕ Quick Audit</button>
+          <button class="btn" id="btnRandomAudit">🎲 Random Audit</button>
+          <button class="btn" id="btnInsights">📊 View Insights</button>
+          <button class="btn" id="btnRefresh">🔄 Refresh</button>
 
-      <!-- Toolbar -->
-      <div class="toolbar" style="padding-left:0">
-        <button class="btn" id="btnOpenQuickAudit">➕ Quick Audit</button>
-        <button class="btn" id="btnRandomAudit">🎲 Random Audit</button>
-        <button class="btn" id="btnInsights">📊 View Insights</button>
-        <button class="btn" id="btnRefresh">🔄 Refresh</button>
+          <!-- DEMO BUTTONS -->
+          <button class="btn" id="btnTicketDemo">🎫 Run Ticket Demo</button>
+          <button class="btn" id="btnCallDemo">📞 Run Call Demo</button>
+        </div>
 
-        <!-- DEMO BUTTONS -->
-        <button class="btn" id="btnTicketDemo">🎫 Run Ticket Demo</button>
-        <button class="btn" id="btnCallDemo">📞 Run Call Demo</button>
+        <!-- Status feedback -->
+        <div id="demoStatus" style="margin-top:10px;color:var(--green);font-weight:bold;"></div>
       </div>
 
-      <!-- Status feedback -->
-      <div id="demoStatus" style="margin-top:10px;color:var(--green);font-weight:bold;"></div>
-    </div>
-
-    <!-- RIGHT: Takumi hat + eyes -->
-    <div id="quinnHost" class="quinn-host">
-      <div class="quinn-wrap">
-        <div class="quinn">
-          <div class="takumi-wrapper">
-            <div class="takumi-hat"></div>
-            <div class="takumi-eyes">
-              <div class="eye left"></div>
-              <div class="eye right"></div>
-            </div>
-          </div>
+      <!-- RIGHT: Takumi video -->
+      <div id="quinnHost" class="quinn-host">
+        <div class="takumi-video">
+          <video autoplay muted loop playsinline>
+            <source src="Takumi V2.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
-</div>
+
   <!-- KPIs -->
   <div class="card"><div class="body">
     <div class="kpis" id="kpis">
@@ -191,26 +138,37 @@
     </div>
   </div></div>
 
+  <!-- Risk + Live Audits Layout -->
   <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px">
     <div class="card">
       <h2 style="display:flex;align-items:center;gap:8px">🧯 High-Risk Queue <span class="pill red" id="queueCount">0</span></h2>
       <div class="body"><div class="table-wrap"><table>
         <thead><tr>
-          <th style="min-width:140px">Ticket</th><th style="min-width:140px">Owner</th>
-          <th style="min-width:110px">Risk</th><th>Issue</th>
-          <th style="min-width:120px">Status</th><th style="min-width:160px">Action</th>
+          <th style="min-width:140px">Ticket</th>
+          <th style="min-width:140px">Owner</th>
+          <th style="min-width:110px">Risk</th>
+          <th style="min-width:160px">Issue</th>
+          <th style="min-width:140px">Audit Time</th>
+          <th style="min-width:140px">Resolution Time</th>
+          <th style="min-width:120px">Status</th>
+          <th style="min-width:160px">Action</th>
         </tr></thead>
         <tbody id="queueBody"></tbody>
       </table></div></div>
     </div>
-
     <div style="display:flex;flex-direction:column;gap:16px">
       <div class="card">
         <h2>🛰️ Live Audits (auto + manual)</h2>
         <div class="body"><div class="table-wrap"><table>
           <thead><tr>
-            <th style="min-width:120px">Time</th><th style="min-width:140px">Ticket</th><th style="min-width:90px">Channel</th>
-            <th style="min-width:80px">Score</th><th style="min-width:90px">Risk</th><th style="min-width:120px">Source</th><th>Notes</th>
+            <th style="min-width:140px">Audit Time</th>
+            <th style="min-width:140px">Ticket</th>
+            <th style="min-width:90px">Channel</th>
+            <th style="min-width:80px">Score</th>
+            <th style="min-width:90px">Risk</th>
+            <th style="min-width:120px">Source</th>
+            <th style="min-width:160px">Issue</th>
+            <th style="min-width:140px">Resolution Time</th>
           </tr></thead>
           <tbody id="recentBody"></tbody>
         </table></div></div>
@@ -220,7 +178,9 @@
         <h2>🔎 Search</h2>
         <div class="body">
           <div class="toolbar" style="padding:0">
-            <div class="search" style="margin:0;width:100%"><input id="searchBox" placeholder="Search ticket, owner, issue…"/></div>
+            <div class="search" style="margin:0;width:100%">
+              <input id="searchBox" placeholder="Search ticket, owner, issue…"/>
+            </div>
           </div>
         </div>
       </div>
@@ -231,19 +191,28 @@
 <!-- Quick Audit Modal -->
 <div class="backdrop" id="auditBackdrop">
   <div class="modal">
-    <header><h3 style="margin:0">➕ Quick Audit</h3><button class="btn" id="btnCloseModal">✖</button></header>
+    <header>
+      <h3 style="margin:0">➕ Quick Audit</h3>
+      <button class="btn" id="btnCloseModal">✖</button>
+    </header>
     <div class="content">
       <div class="grid">
         <div><label>Ticket / Call / Chat ID</label><input id="qa_ticket" placeholder="01-ABC123"/></div>
-        <div><label>Channel</label><select id="qa_channel"><option>Ticket</option><option>Call</option><option>Chat</option></select></div>
+        <div><label>Channel</label>
+          <select id="qa_channel"><option>Ticket</option><option>Call</option><option>Chat</option></select>
+        </div>
         <div><label>Owner (optional)</label><input id="qa_owner" placeholder="Owner name"/></div>
         <div><label>Link (optional)</label><input id="qa_link" placeholder="https://…"/></div>
       </div>
       <div class="grid" style="margin-top:8px">
         <div><label>Score %</label><input id="qa_score" type="number" min="0" max="100" step="0.1" placeholder="85"/></div>
-        <div><label>Risk Level</label><select id="qa_risk"><option>Low</option><option>Medium</option><option>High</option></select></div>
+        <div><label>Risk Level</label>
+          <select id="qa_risk"><option>Low</option><option>Medium</option><option>High</option></select>
+        </div>
       </div>
-      <div style="margin-top:8px"><label>Issues / Notes</label><textarea id="qa_issues" placeholder="Key findings, notes, or remediation…"></textarea></div>
+      <div style="margin-top:8px"><label>Issues / Notes</label>
+        <textarea id="qa_issues" placeholder="Key findings, notes, or remediation…"></textarea>
+      </div>
       <div style="display:flex;gap:10px;margin-top:14px">
         <button class="btn" id="btnSaveAudit">Save Audit</button>
         <button class="btn" id="btnRandomFill">🎲 Random Ticket</button>
@@ -260,36 +229,12 @@
   const INSIGHTS_URL= 'https://lookerstudio.google.com/reporting/YOUR_REPORT_ID';
   /* ============================== */
 
-  // ==== TAKUMI EYE TRACKING ====
-  (function(){
-    const eyes = document.querySelectorAll('.takumi-eyes .eye');
-    const wrap = document.querySelector('.takumi-wrapper');
-
-    if (wrap && eyes.length) {
-      wrap.addEventListener('mousemove', (e)=>{
-        const r = wrap.getBoundingClientRect();
-        const x = (e.clientX - (r.left + r.width/2)) / (r.width/2);
-        const y = (e.clientY - (r.top + r.height/2)) / (r.height/2);
-
-        eyes.forEach(eye=>{
-          eye.style.transform = `translate(${x*6}px, ${y*4}px)`;
-        });
-      });
-      wrap.addEventListener('mouseleave', ()=>{
-        eyes.forEach(eye=>{
-          eye.style.transform = 'translate(0,0)';
-        });
-      });
-    }
-  })();
-  // ==============================
-
   // Utilities
   const qs = (s,root=document)=>root.querySelector(s);
   const toast = (msg)=>{ const t=qs('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); };
 
   // Generic fetch with JSONP fallback
-  function fetchFn(fn, params={}){
+  function fetchFn(fn, params={}) {
     const u = new URL(WEB_APP_URL);
     u.searchParams.set('fn', fn);
     Object.entries(params).forEach(([k,v])=>u.searchParams.set(k, v));
@@ -339,6 +284,8 @@
         <td>${r.owner || ''}</td>
         <td><span class="pill ${riskClass}">${riskLabel}</span></td>
         <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
+        <td>${r.auditTime || '-'}</td>
+        <td>${r.resolutionTime || '-'}</td>
         <td>${status}</td>
         <td>
           <button class="btn" data-ticket="${ticketText}">Resolve</button>
@@ -373,18 +320,18 @@
         const riskClass = (label==='High'?'red':(label==='Medium'?'yellow':'green'));
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${x.time||''}</td>
+          <td>${x.auditTime || x.time || '-'}</td>
           <td><a href="${x.link||'#'}" target="_blank" rel="noopener">${x.title||x.ticket||''}</a></td>
           <td>${x.channel||''}</td>
           <td>${(x.score===undefined||x.score==='')?'-':x.score}</td>
           <td><span class="pill ${riskClass}">${label}</span></td>
           <td>${x.source||''}</td>
-          <td title="${(x.issues||'')}">${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}</td>`;
+          <td title="${(x.issues||'')}">${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}</td>
+          <td>${x.resolutionTime || '-'}</td>`;
         body.appendChild(tr);
       });
-    }catch(e){ console.error(e); }
+    }catch(e){ console. Error(e); }
   }
-
   // Quick search
   qs('#searchBox').addEventListener('input', (e)=>{
     const q = e.target.value.toLowerCase().trim();
@@ -408,6 +355,7 @@
 
       if(res && res.ok){ toast('✅ Resolved'); loadData(); return; }
 
+      // fallback via JSONP
       const d = await fetchFn('resolve', {ticket, by:'manager@company.com', token:TOKEN});
       if(d && d.ok){ toast('✅ Resolved'); loadData(); } else { toast('⚠️ Could not resolve'); }
     }catch(_){ toast('⚠️ Resolve failed'); }
@@ -490,6 +438,7 @@
     }
   };
 
+  // Init
   loadData();
   setInterval(loadRecentAudits, 10000);
 </script>
