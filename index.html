@@ -30,6 +30,7 @@
         document.body.appendChild(s);
       }));
   }
+
   // Renderers
   let ALL_ALERTS = [];
 
@@ -129,9 +130,10 @@
         body.appendChild(tr);
       });
     }catch(e){ 
-      console. Error(e); 
+      console.error(e); 
     }
   }
+
   // Quick search
   qs('#searchBox').addEventListener('input', (e)=>{
     const q = e.target.value.toLowerCase().trim();
@@ -197,6 +199,7 @@
   }
 
   document.getElementById('btnCloseModal').onclick = closeAuditModal;
+
   // Save audit
   async function saveAudit(){
     const payload = {
@@ -261,7 +264,7 @@
     }
   }
 
-  // Bind active buttons (only ones that exist in HTML)
+  // Bind active buttons
   document.getElementById('btnSaveAudit').onclick  = saveAudit;
   document.getElementById('btnRandomFill').onclick = randomFill;
 
