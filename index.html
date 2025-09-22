@@ -1,3 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Takumi — Command Center</title>
+  <style>
+    body { background:#0B1020; color:#e8f7ff; font-family: Inter, sans-serif; margin:0; }
+    .wrap{ max-width:1200px; margin:20px auto; padding:0 16px; }
+    .card{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:16px; margin-bottom:16px; }
+    .kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .kpi .label{ opacity:.7; font-size:.85rem }
+    .kpi .value{ font-size:1.5rem; font-weight:700; }
+    table{ width:100%; border-collapse:collapse; margin-top:8px; }
+    th,td{ border-bottom:1px solid rgba(255,255,255,.15); padding:8px 12px; text-align:left; }
+    .pill{ padding:2px 8px; border-radius:999px; font-size:.75rem; }
+    .pill.red{ background:rgba(255,59,59,.2); }
+    .pill.yellow{ background:rgba(255,190,70,.2); }
+    .pill.green{ background:rgba(59,255,136,.2); }
+    .toast{ position:fixed; bottom:20px; right:20px; background:#141c30; padding:10px 16px; border-radius:10px; opacity:0; transition:.3s; }
+    .toast.show{ opacity:1; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Takumi — Command Center</h1>
+
+    <!-- KPIs -->
+    <div class="card">
+      <div class="kpis">
+        <div class="kpi"><div class="label">High-Risk Open</div><div class="value" id="kpiHigh">–</div></div>
+        <div class="kpi"><div class="label">Medium Risk</div><div class="value" id="kpiMed">–</div></div>
+        <div class="kpi"><div class="label">Resolved (7d)</div><div class="value" id="kpiRes7">–</div></div>
+        <div class="kpi"><div class="label">Avg Audit Score (7d)</div><div class="value" id="kpiScore">–</div></div>
+      </div>
+    </div>
+
+    <!-- High Risk Queue -->
+    <div class="card">
+      <h2>🧯 High-Risk Queue <span id="queueCount">0</span></h2>
+      <table>
+        <thead><tr>
+          <th>Ticket</th><th>Owner</th><th>Risk</th><th>Issue</th><th>Audit Time</th><th>Resolution Time</th><th>Status</th><th>Action</th>
+        </tr></thead>
+        <tbody id="queueBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Live Audits -->
+    <div class="card">
+      <h2>🛰️ Live Audits</h2>
+      <table>
+        <thead><tr>
+          <th>Audit Time</th><th>Ticket</th><th>Channel</th><th>Score</th><th>Risk</th><th>Source</th><th>Issue</th><th>Resolution Time</th>
+        </tr></thead>
+        <tbody id="recentBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Search -->
+    <div class="card">
+      <h2>🔎 Search</h2>
+      <input id="searchBox" placeholder="Search ticket, owner, issue…" style="width:100%; padding:8px; border-radius:8px;"/>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Your script goes here -->
+  <script src="app.js"></script>
+</body>
+</html>
 <script>
   /* ====== EDIT THESE THREE ====== */
   const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzabzQA1Gs4n9wy_9QDQyVTvFEpkd-3kAJgXlDhFj2AcQpImvfmYJXZ-5qTWNl0qO3I/exec';
