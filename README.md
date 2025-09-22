@@ -1,2 +1,2 @@
-# quinn-command-center
-The Quinn Command Center
+# takumi-command-center
+The takumi Command Center
