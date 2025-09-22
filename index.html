@@ -1,6 +1,6 @@
 <script>
   /* ====== EDIT THESE THREE ====== */
-  const WEB_APP_URL = 'https://script.google.com/a/macros/thestudio.com/s/AKfycbzabzQA1Gs4n9wy_9QDQyVTvFEpkd-3kAJgXlDhFj2AcQpImvfmYJXZ-5qTWNl0qO3I/exec';
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzabzQA1Gs4n9wy_9QDQyVTvFEpkd-3kAJgXlDhFj2AcQpImvfmYJXZ-5qTWNl0qO3I/exec';
   const TOKEN       = 'TAKUMI_PORTAL_0c7a5f8f-1e9a-4b34-9b7d-3e6a9c21f4d8';
   const INSIGHTS_URL= 'https://lookerstudio.google.com/reporting/YOUR_REPORT_ID';
   /* ============================== */
@@ -9,6 +9,7 @@
   const qs = (s,root=document)=>root.querySelector(s);
   const toast = (msg)=>{ 
     const t=qs('#toast'); 
+    if(!t) return;
     t.textContent=msg; 
     t.classList.add('show'); 
     setTimeout(()=>t.classList.remove('show'), 2200); 
@@ -45,16 +46,17 @@
   }
 
   function renderKpis(k){
-    qs('#kpiHigh').textContent = k.highRisk ?? k.highOpen ?? '–';
-    qs('#kpiMed').textContent  = k.medOpen  ?? '–';
-    qs('#kpiRes7').textContent = k.resolved7d ?? '–';
-    qs('#kpiScore').textContent= k.avgScore7d ?? k.avgScore ?? '–';
+    if(qs('#kpiHigh')) qs('#kpiHigh').textContent = k.highRisk ?? k.highOpen ?? '–';
+    if(qs('#kpiMed'))  qs('#kpiMed').textContent  = k.medOpen  ?? '–';
+    if(qs('#kpiRes7')) qs('#kpiRes7').textContent = k.resolved7d ?? '–';
+    if(qs('#kpiScore'))qs('#kpiScore').textContent= k.avgScore7d ?? k.avgScore ?? '–';
   }
 
   function renderQueue(rows){
     const body = qs('#queueBody'); 
+    if(!body) return;
     body.innerHTML = '';
-    qs('#queueCount').textContent = rows.length;
+    if(qs('#queueCount')) qs('#queueCount').textContent = rows.length;
 
     for(const r of rows){
       const riskLabel = riskToLabel(r.risk, r.riskLevel);
@@ -109,6 +111,7 @@
       const d = await fetchFn('recent');
       const rows = d?.rows || (Array.isArray(d) ? d : []);
       const body = qs('#recentBody'); 
+      if(!body) return;
       body.innerHTML = '';
 
       rows.forEach(x=>{
@@ -135,18 +138,21 @@
   }
 
   // Quick search
-  qs('#searchBox').addEventListener('input', (e)=>{
-    const q = e.target.value.toLowerCase().trim();
-    if(!q) return renderQueue(ALL_ALERTS);
+  const searchBox = qs('#searchBox');
+  if(searchBox){
+    searchBox.addEventListener('input', (e)=>{
+      const q = e.target.value.toLowerCase().trim();
+      if(!q) return renderQueue(ALL_ALERTS);
 
-    const out = ALL_ALERTS.filter(r=>
-      (r.title||r.ticket||'').toLowerCase().includes(q) ||
-      (r.owner||'').toLowerCase().includes(q) ||
-      (r.issues||'').toString().toLowerCase().includes(q) ||
-      (r.status||'').toLowerCase().includes(q)
-    );
-    renderQueue(out);
-  });
+      const out = ALL_ALERTS.filter(r=>
+        (r.title||r.ticket||'').toLowerCase().includes(q) ||
+        (r.owner||'').toLowerCase().includes(q) ||
+        (r.issues||'').toString().toLowerCase().includes(q) ||
+        (r.status||'').toLowerCase().includes(q)
+      );
+      renderQueue(out);
+    });
+  }
 
   // Resolve ticket
   async function resolveTicket(ticket){
@@ -184,33 +190,35 @@
   };
 
   function openAuditModal(prefill={}){
-    inputs.ticket.value  = prefill.ticket || '';
-    inputs.channel.value = prefill.channel || 'Ticket';
-    inputs.owner.value   = prefill.owner || '';
-    inputs.link.value    = prefill.link || '';
-    inputs.score.value   = prefill.score || '';
-    inputs.risk.value    = prefill.risk || prefill.riskLevel || 'Low';
-    inputs.issues.value  = prefill.issues || '';
+    if(!backdrop) return;
+    if(inputs.ticket) inputs.ticket.value  = prefill.ticket || '';
+    if(inputs.channel) inputs.channel.value = prefill.channel || 'Ticket';
+    if(inputs.owner)   inputs.owner.value   = prefill.owner || '';
+    if(inputs.link)    inputs.link.value    = prefill.link || '';
+    if(inputs.score)   inputs.score.value   = prefill.score || '';
+    if(inputs.risk)    inputs.risk.value    = prefill.risk || prefill.riskLevel || 'Low';
+    if(inputs.issues)  inputs.issues.value  = prefill.issues || '';
     backdrop.classList.add('show');
   }
 
   function closeAuditModal(){ 
-    backdrop.classList.remove('show'); 
+    if(backdrop) backdrop.classList.remove('show'); 
   }
 
-  document.getElementById('btnCloseModal').onclick = closeAuditModal;
+  const btnClose = document.getElementById('btnCloseModal');
+  if(btnClose) btnClose.onclick = closeAuditModal;
 
   // Save audit
   async function saveAudit(){
     const payload = {
       action:'submitAudit', token: TOKEN,
-      ticket: inputs.ticket.value.trim(),
-      channel: inputs.channel.value.trim(),
-      owner: inputs.owner.value.trim(),
-      link: inputs.link.value.trim(),
-      score: inputs.score.value.trim(),
-      riskLevel: inputs.risk.value.trim(),
-      issues: inputs.issues.value.trim()
+      ticket: inputs.ticket?.value.trim() || '',
+      channel: inputs.channel?.value.trim() || 'Ticket',
+      owner: inputs.owner?.value.trim() || '',
+      link: inputs.link?.value.trim() || '',
+      score: inputs.score?.value.trim() || '',
+      riskLevel: inputs.risk?.value.trim() || 'Low',
+      issues: inputs.issues?.value.trim() || ''
     };
 
     if(!payload.ticket){ 
@@ -242,6 +250,7 @@
         toast('⚠️ Could not save audit'); 
       }
     }catch(e){ 
+      console.error(e);
       toast('⚠️ Save failed'); 
     }
   }
@@ -265,8 +274,11 @@
   }
 
   // Bind active buttons
-  document.getElementById('btnSaveAudit').onclick  = saveAudit;
-  document.getElementById('btnRandomFill').onclick = randomFill;
+  const btnSave = document.getElementById('btnSaveAudit');
+  if(btnSave) btnSave.onclick = saveAudit;
+
+  const btnRandom = document.getElementById('btnRandomFill');
+  if(btnRandom) btnRandom.onclick = randomFill;
 
   // Init
   loadData();
