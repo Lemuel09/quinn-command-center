@@ -1,152 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Takumi Command Center</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Takumi — Command Center</title>
+<style>
+  :root{
+    --bg:#0B1020; --panel:rgba(255,255,255,.06); --panel2:rgba(255,255,255,.02);
+    --line:rgba(255,255,255,.12); --text:#e8f7ff; --cyan:#00F0FF; --green:#3BFF88; --purple:#8A7CFF;
+  }
+  html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 50% 0%, #121832 0%, #0B1020 60%, #05070e 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--cyan);text-decoration:none}
+  .wrap{max-width:1200px;margin:18px auto 60px;padding:0 16px}
+  .card{background:linear-gradient(180deg, var(--panel), var(--panel2));border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter: blur(10px)}
+  .card h2{margin:0;padding:16px 18px 6px;font-size:1.1rem;letter-spacing:.3px}
+  .card .body{padding:14px 18px 18px}
 
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #0d1117;
-      color: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
+  /* Title */
+  .titlebar{padding:10px 0 2px;text-align:center}
+  .titlebar h1{margin:0;font-weight:800;letter-spacing:.2px;font-size:clamp(22px,3.2vw,36px)}
 
-    .grid { display: grid; gap: 1rem; padding: 1rem; }
-    .card {
-      background: #161b22;
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-    }
-    h2 { margin-top: 0; }
+  /* HERO */
+  .hero{margin-top:10px;padding:18px}
+  .hero-grid{display:grid;grid-template-columns:minmax(320px,520px) 1fr;gap:18px;align-items:center}
+  @media(max-width:900px){ .hero-grid{grid-template-columns:1fr} }
 
-    /* Hero */
-    <!-- HERO -->
-<div class="card hero">
-  <div class="hero-grid">
+  .hero-copy h2{margin:0 0 8px;font-weight:900;line-height:.95;
+    font-size:clamp(56px,9vw,120px);text-shadow:0 8px 30px rgba(0,0,0,.45), 0 0 24px rgba(0,240,255,.18)}
+  .hero-copy .sysline{font-size:1rem;color:#d8e7ff;opacity:.95;margin:0 0 6px}
+  .hero-copy .miniTag{font-style:italic;color:#9fb7ff;opacity:.95;margin:0}
 
-    <!-- LEFT: text -->
-    <div class="hero-copy">
-      <h2>Takumi</h2>
-      <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
-      <p class="miniTag">The one AI agent to bind all risks and bring them to light...</p>
-    </div>
+  /* Quinn Eye */
+  .quinn-wrap{display:flex;justify-content:center;align-items:center}
+  .quinn{position:relative;width:220px;height:220px}
+  .halo{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle, rgba(0,240,255,.15), transparent 70%);animation:pulse 4s infinite}
+  .ring{position:absolute;inset:10px;border:2px solid var(--cyan);border-radius:50%;animation:spin 20s linear infinite}
+  .sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg, rgba(0,240,255,.2), transparent 90%);animation:spin 6s linear infinite}
+  .core{position:absolute;top:50%;left:50%;width:80px;height:80px;background:radial-gradient(circle, var(--cyan), #0B1020);border-radius:50%;transform:translate(-50%,-50%)}
+  .iris{position:absolute;top:50%;left:50%;width:24px;height:24px;background:var(--green);border-radius:50%;transform:translate(-50%,-50%);animation:pulse 2.5s infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes pulse{50%{opacity:.5;transform:scale(1.05)}}
 
-    <!-- RIGHT: Eye -->
-    <div id="quinnHost" class="quinn-host">
-      <div class="quinn-wrap">
-        <div class="quinn">
-          <div class="halo"></div>
-          <div class="ring"></div>
-          <div class="sweep"></div>
-          <div class="core"></div>
-          <div class="iris"></div>
-        </div>
-      </div>
-    </div>
+  /* KPI + tables */
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(min-width:680px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background: radial-gradient(160px 80px at 20% 0%, rgba(0,240,255,.12), rgba(255,255,255,0));box-shadow: inset 0 0 24px rgba(0,240,255,.06)}
+  .kpi .label{opacity:.8;font-size:.85rem}
+  .kpi .value{font-size:1.6rem;font-weight:700;margin-top:4px}
+  .kpi .sub{opacity:.75;font-size:.8rem}
+  .table-wrap{border:1px solid rgba(255,255,255,.12);border-radius:14px;overflow:auto}
+  table{width:100%;border-collapse:separate;border-spacing:0}
+  th,td{padding:10px 12px;text-align:left;font-size:.92rem}
+  thead th{position:sticky;top:0;background:rgba(11,16,32,.9);backdrop-filter: blur(6px);z-index:1}
+  tbody tr{border-bottom:1px solid rgba(255,255,255,.08)}
+  tbody tr:hover{background:rgba(255,255,255,.03)}
+  .pill{display:inline-flex;gap:6px;align-items:center;font-size:.75rem;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+  .pill.red{background:rgba(255,59,59,.15);border-color:rgba(255,59,59,.35)}
+  .pill.yellow{background:rgba(255,190,70,.12);border-color:rgba(255,190,70,.35)}
+  .pill.green{background:rgba(59,255,136,.12);border-color:rgba(59,255,136,.35)}
 
-  </div>
-</div>
-
-
-    /* Tables */
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 0.6rem; border-bottom: 1px solid #333; }
-    th { text-align: left; color: #ddd; }
-    td a { color: #4fc3f7; text-decoration: none; }
-    td a:hover { text-decoration: underline; }
-
-    .pill { padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; }
-    .pill.red { background: #d32f2f; }
-    .pill.yellow { background: #fbc02d; color: #000; }
-    .pill.green { background: #388e3c; }
-
-    /* Toast */
-    #toast {
-      visibility: hidden; min-width: 200px;
-      margin-left: -100px; background-color: #333;
-      color: #fff; text-align: center; border-radius: 4px;
-      padding: 8px; position: fixed; z-index: 1;
-      left: 50%; bottom: 30px; font-size: 14px;
-    }
-    #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2s; }
-    @keyframes fadein { from{bottom:0;opacity:0;} to{bottom:30px;opacity:1;} }
-    @keyframes fadeout { from{bottom:30px;opacity:1;} to{bottom:0;opacity:0;} }
-  </style>
+  /* Modal + toast */
+  .backdrop{position:fixed;inset:0;background:rgba(5,7,14,.6);backdrop-filter: blur(4px);display:none;align-items:center;justify-content:center;z-index:999}
+  .backdrop.show{display:flex}
+  .modal{width:min(720px,92vw);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+  .modal header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px}
+  .modal .content{padding:0 16px 16px}
+  .grid{display:grid;gap:10px;grid-template-columns:1fr}
+  @media(min-width:680px){.grid{grid-template-columns:1fr 1fr}}
+  label{font-size:.85rem;opacity:.9}
+  input,select,textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e8f7ff;border-radius:10px;padding:10px}
+  textarea{min-height:90px}
+  .toast{position:fixed;right:18px;bottom:18px;background:rgba(20,28,48,.95);border:1px solid rgba(255,255,255,.15);color:#e8f7ff;padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(6px);transition:.25s}
+  .toast.show{opacity:1;transform:translateY(0)}
+</style>
 </head>
 <body>
-  <div class="grid">
-    <!-- Hero -->
-    <div class="card hero">
-      <div class="hero-grid">
-        <!-- LEFT: text -->
-        <div class="hero-copy">
-          <h2>Takumi</h2>
-          <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
-          <p class="miniTag">The one AI agent to bind all risks and bring them to light...</p>
-        </div>
+<div class="wrap">
+  <div class="titlebar">
+    <h1>Takumi — Command Center</h1>
+  </div>
 
-        <!-- RIGHT: Eye -->
-        <div id="quinnHost" class="quinn-host">
-          <div class="quinn-wrap">
-            <div class="quinn">
-              <div class="halo"></div>
-              <div class="ring"></div>
-              <div class="sweep"></div>
-              <div class="core"></div>
-              <div class="iris"></div>
-            </div>
+  <!-- HERO -->
+  <div class="card hero">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <h2>Takumi</h2>
+        <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
+        <p class="miniTag">The one AI agent to bind all risks and bring them to light...</p>
+      </div>
+      <div id="quinnHost" class="quinn-host">
+        <div class="quinn-wrap">
+          <div class="quinn">
+            <div class="halo"></div>
+            <div class="ring"></div>
+            <div class="sweep"></div>
+            <div class="core"></div>
+            <div class="iris"></div>
           </div>
         </div>
       </div>
     </div>
-    <!-- High-Risk Queue -->
-    <div class="card">
-      <h2>High-Risk Queue (<span id="queueCount">0</span>)</h2>
-      <input id="searchBox" type="text" placeholder="Search..." style="margin-bottom:8px;width:100%;padding:6px;border-radius:6px;border:1px solid #444;background:#222;color:#fff;">
-      <div style="overflow-x:auto;">
-        <table>
-          <thead><tr>
-            <th style="min-width:140px">Ticket</th>
-            <th style="min-width:140px">Owner</th>
-            <th style="min-width:110px">Risk</th>
-            <th style="min-width:160px">Issue</th>
-            <th style="min-width:140px">Audit Time</th>
-            <th style="min-width:140px">Resolution Time</th>
-            <th style="min-width:120px">Status</th>
-          </tr></thead>
-          <tbody id="queueBody"></tbody>
-        </table>
-      </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="card"><div class="body">
+    <div class="kpis" id="kpis">
+      <div class="kpi"><div class="label">High-Risk Open</div><div class="value" id="kpiHigh">–</div><div class="sub">Unresolved</div></div>
+      <div class="kpi"><div class="label">Medium Risk</div><div class="value" id="kpiMed">–</div><div class="sub">Unresolved</div></div>
+      <div class="kpi"><div class="label">Resolved (7d)</div><div class="value" id="kpiRes7">–</div><div class="sub">Last 7 days</div></div>
+      <div class="kpi"><div class="label">Avg Audit Score (7d)</div><div class="value" id="kpiScore">–</div><div class="sub">Across audits</div></div>
     </div>
-    <!-- Live Audits -->
+  </div></div>
+
+  <!-- Risk + Live Audits Layout -->
+  <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px">
     <div class="card">
-      <h2>Live Audits</h2>
-      <div style="overflow-x:auto;">
-        <table>
+      <h2 style="display:flex;align-items:center;gap:8px">🧯 High-Risk Queue <span class="pill red" id="queueCount">0</span></h2>
+      <div class="body"><div class="table-wrap"><table>
+        <thead><tr>
+          <th style="min-width:140px">Ticket</th>
+          <th style="min-width:140px">Owner</th>
+          <th style="min-width:110px">Risk</th>
+          <th style="min-width:160px">Issue</th>
+          <th style="min-width:140px">Audit Time</th>
+          <th style="min-width:140px">Resolution Time</th>
+          <th style="min-width:120px">Status</th>
+          <th style="min-width:160px">Action</th>
+        </tr></thead>
+        <tbody id="queueBody"></tbody>
+      </table></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card">
+        <h2>🛰️ Live Audits (auto + manual)</h2>
+        <div class="body"><div class="table-wrap"><table>
           <thead><tr>
-            <th>Audit Time</th>
-            <th>Ticket</th>
-            <th>Channel</th>
-            <th>Score</th>
-            <th>Risk</th>
-            <th>Source</th>
-            <th>Issues</th>
-            <th>Resolution Time</th>
+            <th style="min-width:140px">Audit Time</th>
+            <th style="min-width:140px">Ticket</th>
+            <th style="min-width:90px">Channel</th>
+            <th style="min-width:80px">Score</th>
+            <th style="min-width:90px">Risk</th>
+            <th style="min-width:120px">Source</th>
+            <th style="min-width:160px">Issue</th>
+            <th style="min-width:140px">Resolution Time</th>
           </tr></thead>
           <tbody id="recentBody"></tbody>
-        </table>
+        </table></div></div>
       </div>
     </div>
-
-    <div id="toast"></div>
   </div>
+</div>
+
+<!-- Quick Audit Modal -->
+<div class="backdrop" id="auditBackdrop">
+  <div class="modal">
+    <header>
+      <h3 style="margin:0">➕ Quick Audit</h3>
+      <button class="btn" id="btnCloseModal">✖</button>
+    </header>
+    <div class="content">
+      <div class="grid">
+        <div><label>Ticket / Call / Chat ID</label><input id="qa_ticket" placeholder="01-ABC123"/></div>
+        <div><label>Channel</label>
+          <select id="qa_channel"><option>Ticket</option><option>Call</option><option>Chat</option></select>
+        </div>
+        <div><label>Owner (optional)</label><input id="qa_owner" placeholder="Owner name"/></div>
+        <div><label>Link (optional)</label><input id="qa_link" placeholder="https://…"/></div>
+      </div>
+      <div class="grid" style="margin-top:8px">
+        <div><label>Score %</label><input id="qa_score" type="number" min="0" max="100" step="0.1" placeholder="85"/></div>
+        <div><label>Risk Level</label>
+          <select id="qa_risk"><option>Low</option><option>Medium</option><option>High</option></select>
+        </div>
+      </div>
+      <div style="margin-top:8px"><label>Issues / Notes</label>
+        <textarea id="qa_issues" placeholder="Key findings, notes, or remediation…"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button class="btn" id="btnSaveAudit">Save Audit</button>
+        <button class="btn" id="btnRandomFill">🎲 Random Ticket</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 <script>
-  const WEB_APP_URL = 'YOUR_WEBAPP_URL';  // put your live Apps Script URL here
-  const TOKEN       = 'YOUR_TOKEN_HERE';
+  /* ====== CONFIG ====== */
+  const WEB_APP_URL = 'https://script.google.com/a/macros/thestudio.com/s/AKfycbyWe3NhOAzFtBOT7IRC2l_eUdoJSZ-Rdc2KPmD2Zd5gUTjTKX0CqZ5y--KoBt3DnKLH/exec';
+  const TOKEN       = 'QUINN_1f9a0d7a-6a3e-4a88-94c1-3b02a9e7c4d5';
+  /* ==================== */
 
   const qs = (s,root=document)=>root.querySelector(s);
   const toast = (msg)=>{ const t=qs('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); };
@@ -154,11 +197,12 @@
   function fetchFn(fn, params={}) {
     const u = new URL(WEB_APP_URL);
     u.searchParams.set('fn', fn);
-    u.searchParams.set('token', TOKEN);
     Object.entries(params).forEach(([k,v])=>u.searchParams.set(k, v));
-    return fetch(u, {mode:'cors'}).then(r=>r.json());
+    u.searchParams.set('token', TOKEN);
+    return fetch(u, {mode:'cors'}).then(r=>r.json()).catch(()=> ({}));
   }
 
+  let ALL_ALERTS = [];
   function riskToLabel(risk, riskLevel){
     if (riskLevel) return riskLevel;
     const n = Number(risk);
@@ -169,73 +213,138 @@
     return 'Low';
   }
 
-  function renderQueue(rows){
-    const body = qs('#queueBody'); 
-    body.innerHTML = '';
-    qs('#queueCount').textContent = rows.length;
+  function renderKpis(k){
+    qs('#kpiHigh').textContent = k.highRisk ?? k.highOpen ?? '–';
+    qs('#kpiMed').textContent  = k.medOpen  ?? '–';
+    qs('#kpiRes7').textContent = k.resolved7d ?? '–';
+    qs('#kpiScore').textContent= k.avgScore7d ?? k.avgScore ?? '–';
+  }
 
+  function renderQueue(rows){
+    const body = qs('#queueBody'); body.innerHTML = '';
+    qs('#queueCount').textContent = rows.length;
     rows.forEach(r=>{
       const riskLabel = riskToLabel(r.risk, r.riskLevel);
       const riskClass = riskLabel==='High' ? 'red' : (riskLabel==='Medium' ? 'yellow' : 'green');
       const status = r.status || 'Open';
       const ticketText = r.title || r.ticket || '';
       const link = r.link || '#';
-
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><a href="${link}" target="_blank" rel="noopener">${ticketText}</a></td>
         <td>${r.owner || ''}</td>
         <td><span class="pill ${riskClass}">${riskLabel}</span></td>
-        <td title="${(r.issues||'')}">
-          ${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}
-        </td>
-        <td>${r.time || '-'}</td>
+        <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
+        <td>${r.time || r.auditTime || '-'}</td>
         <td>${r.resolutionTime || '-'}</td>
-        <td>${status}</td>`;
+        <td>${status}</td>
+        <td>
+          <button class="btn" data-ticket="${ticketText}">Resolve</button>
+          <button class="btn" onclick="window.open('${link}','_blank')">Open</button>
+        </td>`;
       body.appendChild(tr);
+    });
+    body.querySelectorAll('button.btn').forEach(btn=>{
+      if(btn.textContent.trim()!=='Resolve') return;
+      btn.addEventListener('click', async (e)=>{ await resolveTicket(e.currentTarget.getAttribute('data-ticket')); });
     });
   }
 
   async function loadData(){
     try{
       const data = await fetchFn('alerts');
-      renderQueue(data.alerts || []);
-    }catch(e){ toast('⚠️ Could not load alerts'); }
+      const alerts = Array.isArray(data.alerts) ? data.alerts : [];
+      ALL_ALERTS = alerts;
+      renderQueue(alerts);
+      renderKpis(data.kpis || {});
+    }catch(e){ console.error(e); toast('⚠️ Could not load alerts/KPIs'); }
     loadRecentAudits();
   }
 
   async function loadRecentAudits(){
     try{
       const d = await fetchFn('recent');
-      const rows = d?.rows || [];
-      const body = qs('#recentBody'); 
-      body.innerHTML = '';
-
+      const rows = d?.rows || (Array.isArray(d) ? d : []);
+      const body = qs('#recentBody'); body.innerHTML = '';
       rows.forEach(x=>{
         const label = riskToLabel(x.risk, x.riskLevel);
         const riskClass = (label==='High'?'red':(label==='Medium'?'yellow':'green'));
-
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${x.auditTime || x.time || '-'}</td>
+          <td>${x.time || x.auditTime || '-'}</td>
           <td><a href="${x.link||'#'}" target="_blank" rel="noopener">${x.title||x.ticket||''}</a></td>
           <td>${x.channel||''}</td>
           <td>${(x.score===undefined||x.score==='')?'-':x.score}</td>
           <td><span class="pill ${riskClass}">${label}</span></td>
           <td>${x.source||''}</td>
-          <td title="${(x.issues||'')}">
-            ${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}
-          </td>
+          <td title="${(x.issues||'')}">${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}</td>
           <td>${x.resolutionTime || '-'}</td>`;
         body.appendChild(tr);
       });
     }catch(e){ console.error(e); }
   }
 
-  qs('#searchBox').addEventListener('input', (e)=>{
-    const q = e.target.value.toLowerCase().trim();
-    if(!q) return loadData();
-  });
+  async function resolveTicket(ticket){
+    try{
+      const res = await fetch(WEB_APP_URL, {
+        method:'POST', mode:'cors',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'resolve', ticket, by:'manager@company.com', token:TOKEN})
+      }).then(x=>x.json()).catch(()=>null);
+      if(res && res.ok){ toast('✅ Resolved'); loadData(); return; }
+      const d = await fetchFn('resolve', {ticket, by:'manager@company.com'});
+      if(d && d.ok){ toast('✅ Resolved'); loadData(); } else { toast('⚠️ Could not resolve'); }
+    }catch(_){ toast('⚠️ Resolve failed'); }
+  }
+
+  const backdrop = qs('#auditBackdrop');
+  const inputs = {
+    ticket: qs('#qa_ticket'), channel: qs('#qa_channel'), owner: qs('#qa_owner'),
+    link: qs('#qa_link'), score: qs('#qa_score'), risk: qs('#qa_risk'), issues: qs('#qa_issues')
+  };
+  function openAuditModal(prefill={}){
+    inputs.ticket.value  = prefill.ticket || '';
+    inputs.channel.value = prefill.channel || 'Ticket';
+    inputs.owner.value   = prefill.owner || '';
+    inputs.link.value    = prefill.link || '';
+    inputs.score.value   = prefill.score || '';
+    inputs.risk.value    = prefill.risk || prefill.riskLevel || 'Low';
+    inputs.issues.value  = prefill.issues || '';
+    backdrop.classList.add('show');
+  }
+  function closeAuditModal(){ backdrop.classList.remove('show'); }
+  document.getElementById('btnCloseModal').onclick = closeAuditModal;
+
+  async function saveAudit(){
+    const payload = {
+      action:'submitAudit', token: TOKEN,
+      ticket: inputs.ticket.value.trim(),
+      channel: inputs.channel.value.trim(),
+      owner: inputs.owner.value.trim(),
+      link: inputs.link.value.trim(),
+      score: inputs.score.value.trim(),
+      riskLevel: inputs.risk.value.trim(),
+      issues: inputs.issues.value.trim()
+    };
+    if(!payload.ticket){ toast('Ticket/Call/Chat ID is required'); return; }
+    try{
+      const r = await fetch(WEB_APP_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }).then(x=>x.json()).catch(()=>null);
+      if(r && r.ok){ toast('✅ Audit saved'); closeAuditModal(); loadData(); return; }
+      const d = await fetchFn('submitAudit', payload);
+      if(d && d.ok){ toast('✅ Audit saved'); closeAuditModal(); loadData(); } else { toast('⚠️ Could not save audit'); }
+    }catch(e){ toast('⚠️ Save failed'); }
+  }
+
+  async function randomFill(){
+    try{
+      const data = await fetchFn('random');
+      if(data && data.ticket){ openAuditModal(data); toast('🎲 Random ticket loaded'); }
+      else{ openAuditModal(); toast('No candidates found — enter an ID'); }
+    }catch(e){ openAuditModal(); toast('No candidates found — enter an ID'); }
+  }
+
+  document.getElementById('btnSaveAudit').onclick  = saveAudit;
+  document.getElementById('btnRandomFill').onclick = randomFill;
 
   loadData();
   setInterval(loadRecentAudits, 10000);
