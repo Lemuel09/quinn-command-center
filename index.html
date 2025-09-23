@@ -306,7 +306,6 @@
   });
 }
 
-
   async function loadData(){
     try{
       const data = await fetchFn('alerts');
@@ -319,26 +318,36 @@
   }
 
   async function loadRecentAudits(){
-    try{
-      const d = await fetchFn('recent');
-      const rows = d?.rows || (Array.isArray(d) ? d : []);
-      const body = qs('#recentBody'); body.innerHTML = '';
-      rows.forEach(x=>{
-        const label = riskToLabel(x.risk, x.riskLevel);
-        const riskClass = (label==='High'?'red':(label==='Medium'?'yellow':'green'));
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${x.time||''}</td>
-          <td><a href="${x.link||'#'}" target="_blank" rel="noopener">${x.title||x.ticket||''}</a></td>
-          <td>${x.channel||''}</td>
-          <td>${(x.score===undefined||x.score==='')?'-':x.score}</td>
-          <td><span class="pill ${riskClass}">${label}</span></td>
-          <td>${x.source||''}</td>
-          <td title="${(x.issues||'')}">${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}</td>`;
-        body.appendChild(tr);
-      });
-    }catch(e){ console.error(e); /* silent */ }
-  }
+  try{
+    const d = await fetchFn('recent');
+    const rows = d?.rows || (Array.isArray(d) ? d : []);
+    
+    // 🔽 Sort newest to oldest by time
+    rows.sort((a,b)=>{
+      const da = new Date(a.auditTime || a.time || 0);
+      const db = new Date(b.auditTime || b.time || 0);
+      return db - da;
+    });
+
+    const body = qs('#recentBody'); 
+    body.innerHTML = '';
+    rows.forEach(x=>{
+      const label = riskToLabel(x.risk, x.riskLevel);
+      const riskClass = (label==='High'?'red':(label==='Medium'?'yellow':'green'));
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${x.time||''}</td>
+        <td><a href="${x.link||'#'}" target="_blank" rel="noopener">${x.title||x.ticket||''}</a></td>
+        <td>${x.channel||''}</td>
+        <td>${(x.score===undefined||x.score==='')?'-':x.score}</td>
+        <td><span class="pill ${riskClass}">${label}</span></td>
+        <td>${x.source||''}</td>
+        <td title="${(x.issues||'')}">${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}</td>`;
+      body.appendChild(tr);
+    });
+  }catch(e){ console.error(e); /* silent */ }
+}
+
 
   // Quick search
   qs('#searchBox').addEventListener('input', (e)=>{
