@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -245,8 +244,8 @@
 
   // Renderers
   let ALL_ALERTS = [];
-  function riskToLabel(risk, riskLevel){
-    if (riskLevel) return riskLevel;
+  function riskToLabel(risk, risklevel){
+    if (risklevel) return risklevel;
     const n = Number(risk);
     if (!isFinite(n)) return 'Low';
     // Accept 0..1 or 0..100
@@ -276,7 +275,7 @@
   });
 
   for(const r of rows){
-    const riskLabel = riskToLabel(r.risk, r.riskLevel);
+    const riskLabel = riskToLabel(r.risk, r.risklevel);
     const riskClass = riskLabel==='High' ? 'red' : (riskLabel==='Medium' ? 'yellow' : 'green');
     const status = r.status || 'Open';
     const ticketText = r.title || r.ticket || '';
@@ -306,39 +305,56 @@
   });
 }
 
-
-  async function loadData(){
-    try{
-      const data = await fetchFn('alerts');
-      const alerts = Array.isArray(data.alerts) ? data.alerts : [];
-      ALL_ALERTS = alerts;
-      renderQueue(alerts);
-      renderKpis(data.kpis || {});
-    }catch(e){ console.error(e); toast('⚠️ Could not load alerts/KPIs'); }
-    loadRecentAudits(); // do not await
+async function loadData(){
+  try{
+    const data = await fetchFn('alerts');
+    const alerts = Array.isArray(data.alerts) ? data.alerts : [];
+    ALL_ALERTS = alerts;
+    renderQueue(alerts);
+    renderKpis(data.kpis || {});
+  }catch(e){ 
+    console.error(e); 
+    toast('⚠️ Could not load alerts/KPIs'); 
   }
+  // 👇 call immediately
+  await loadRecentAudits();  
+}
+
 
   async function loadRecentAudits(){
-    try{
-      const d = await fetchFn('recent');
-      const rows = d?.rows || (Array.isArray(d) ? d : []);
-      const body = qs('#recentBody'); body.innerHTML = '';
-      rows.forEach(x=>{
-        const label = riskToLabel(x.risk, x.riskLevel);
-        const riskClass = (label==='High'?'red':(label==='Medium'?'yellow':'green'));
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${x.time||''}</td>
-          <td><a href="${x.link||'#'}" target="_blank" rel="noopener">${x.title||x.ticket||''}</a></td>
-          <td>${x.channel||''}</td>
-          <td>${(x.score===undefined||x.score==='')?'-':x.score}</td>
-          <td><span class="pill ${riskClass}">${label}</span></td>
-          <td>${x.source||''}</td>
-          <td title="${(x.issues||'')}">${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}</td>`;
-        body.appendChild(tr);
-      });
-    }catch(e){ console.error(e); /* silent */ }
+  try{
+    const d = await fetchFn('recent');
+    console.log('DEBUG recent response:', d);  // 👀 print raw response
+
+    const rows = Array.isArray(d) ? d : (d?.rows || []);
+
+    rows.sort((a,b)=>{
+      const da = new Date(a.auditTime || a.time || 0);
+      const db = new Date(b.auditTime || b.time || 0);
+      return db - da;
+    });
+
+    const body = qs('#recentBody'); 
+    body.innerHTML = '';
+    rows.forEach(x=>{
+      const label = riskToLabel(x.risk, x.risklevel);
+      const riskClass = (label==='High'?'red':(label==='Medium'?'yellow':'green'));
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${x.time||''}</td>
+        <td><a href="${x.link||'#'}" target="_blank" rel="noopener">${x.title||x.ticket||''}</a></td>
+        <td>${x.channel||''}</td>
+        <td>${(x.score===undefined||x.score==='')?'-':x.score}</td>
+        <td><span class="pill ${riskClass}">${label}</span></td>
+        <td>${x.source||''}</td>
+        <td title="${(x.issues||'')}">${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}</td>`;
+      body.appendChild(tr);
+    });
+  }catch(e){ 
+    console.error(e); 
+    toast('⚠️ Could not load recent audits');
   }
+}
 
   // Quick search
   qs('#searchBox').addEventListener('input', (e)=>{
@@ -380,7 +396,7 @@
     inputs.owner.value   = prefill.owner || '';
     inputs.link.value    = prefill.link || '';
     inputs.score.value   = prefill.score || '';
-    inputs.risk.value    = prefill.risk || prefill.riskLevel || 'Low';
+    inputs.risk.value    = prefill.risk || prefill.risklevel || 'Low';
     inputs.issues.value  = prefill.issues || '';
     backdrop.classList.add('show');
   }
@@ -395,7 +411,7 @@
       owner: inputs.owner.value.trim(),
       link: inputs.link.value.trim(),
       score: inputs.score.value.trim(),
-      riskLevel: inputs.risk.value.trim(),
+      risklevel: inputs.risk.value.trim(),
       issues: inputs.issues.value.trim()
     };
     if(!payload.ticket){ toast('Ticket/Call/Chat ID is required'); return; }
