@@ -245,7 +245,7 @@
   // Renderers
   let ALL_ALERTS = [];
   function riskToLabel(risk, risklevel){
-    if (risklevel) return risklevel;
+    if (riskLevel) return risklevel;
     const n = Number(risk);
     if (!isFinite(n)) return 'Low';
     // Accept 0..1 or 0..100
@@ -326,7 +326,9 @@ async function loadData(){
     const d = await fetchFn('recent');
     console.log('DEBUG recent response:', d);  // 👀 print raw response
 
-    const rows = Array.isArray(d) ? d : (d?.rows || []);
+    const rows = d?.rows || d?.recent || (Array.isArray(d) ? d : []);
+console.log("DEBUG rows parsed:", rows);
+
 
     rows.sort((a,b)=>{
       const da = new Date(a.auditTime || a.time || 0);
