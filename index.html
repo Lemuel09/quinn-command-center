@@ -437,15 +437,34 @@ async function loadData(){
     }catch(e){ openAuditModal(); toast('No candidates found — enter an ID'); }
   }
 
-  document.getElementById('btnOpenQuickAudit').onclick = ()=> openAuditModal();
-  document.getElementById('btnRandomAudit').onclick    = ()=> randomFill();
-  document.getElementById('btnInsights').onclick       = ()=> window.open(INSIGHTS_URL,'_blank');
-  document.getElementById('btnRefresh').onclick        = loadData;
-  document.getElementById('btnSaveAudit').onclick      = saveAudit;
-  document.getElementById('btnRandomFill').onclick     = randomFill;
+// === BUTTON SAFEGUARDS ===
 
-  // === DEMO BUTTONS ===
-  document.getElementById('btnTicketDemo').onclick = async () => {
+// Quick Audit modal
+const btnCloseModal = document.getElementById('btnCloseModal');
+if (btnCloseModal) btnCloseModal.onclick = closeAuditModal;
+
+const btnOpenQuickAudit = document.getElementById('btnOpenQuickAudit');
+if (btnOpenQuickAudit) btnOpenQuickAudit.onclick = () => openAuditModal();
+
+const btnRandomAudit = document.getElementById('btnRandomAudit');
+if (btnRandomAudit) btnRandomAudit.onclick = () => randomFill();
+
+const btnSaveAudit = document.getElementById('btnSaveAudit');
+if (btnSaveAudit) btnSaveAudit.onclick = saveAudit;
+
+const btnRandomFill = document.getElementById('btnRandomFill');
+if (btnRandomFill) btnRandomFill.onclick = randomFill;
+
+const btnInsights = document.getElementById('btnInsights');
+if (btnInsights) btnInsights.onclick = () => window.open(INSIGHTS_URL, '_blank');
+
+const btnRefresh = document.getElementById('btnRefresh');
+if (btnRefresh) btnRefresh.onclick = loadData;
+
+// === DEMO BUTTONS (optional) ===
+const btnTicketDemo = document.getElementById('btnTicketDemo');
+if (btnTicketDemo) {
+  btnTicketDemo.onclick = async () => {
     qs('#demoStatus').textContent = "⏳ Running Ticket Demo...";
     try {
       const res = await fetchFn('runTicketDemo');
@@ -455,8 +474,11 @@ async function loadData(){
       qs('#demoStatus').textContent = "❌ Ticket Demo failed";
     }
   };
+}
 
-  document.getElementById('btnCallDemo').onclick = async () => {
+const btnCallDemo = document.getElementById('btnCallDemo');
+if (btnCallDemo) {
+  btnCallDemo.onclick = async () => {
     qs('#demoStatus').textContent = "⏳ Running Call Demo...";
     try {
       const res = await fetchFn('runCallDemo');
@@ -466,6 +488,7 @@ async function loadData(){
       qs('#demoStatus').textContent = "❌ Call Demo failed";
     }
   };
+}
 
   loadData();
   setInterval(loadRecentAudits, 10000);
