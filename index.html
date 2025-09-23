@@ -203,7 +203,7 @@
 
 <script>
   /* ====== EDIT THESE THREE ====== */
-  const WEB_APP_URL = 'https://script.google.com/a/macros/thestudio.com/s/AKfycbyWe3NhOAzFtBOT7IRC2l_eUdoJSZ-Rdc2KPmD2Zd5gUTjTKX0CqZ5y--KoBt3DnKLH/exec';
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyWe3NhOAzFtBOT7IRC2l_eUdoJSZ-Rdc2KPmD2Zd5gUTjTKX0CqZ5y--KoBt3DnKLH/exec';
   const TOKEN       = 'QUINN_PORTAL_0c7a5f8f-1e9a-4b34-9b7d-3e6a9c21f4d8';
   const INSIGHTS_URL= 'https://lookerstudio.google.com/reporting/YOUR_REPORT_ID';
   /* ============================== */
@@ -244,8 +244,8 @@
 
   // Renderers
   let ALL_ALERTS = [];
-  function riskToLabel(risk, risklevel){
-    if (riskLevel) return risklevel;
+  function riskToLabel(risk, riskLevel){
+    if (riskLevel) return riskLevel;
     const n = Number(risk);
     if (!isFinite(n)) return 'Low';
     // Accept 0..1 or 0..100
