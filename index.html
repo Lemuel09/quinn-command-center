@@ -266,33 +266,48 @@
   }
 
   function renderQueue(rows){
-    const body = qs('#queueBody'); body.innerHTML = '';
-    qs('#queueCount').textContent = rows.length;
-    for(const r of rows){
-      const riskLabel = riskToLabel(r.risk, r.riskLevel);
-      const riskClass = riskLabel==='High' ? 'red' : (riskLabel==='Medium' ? 'yellow' : 'green');
-      const status = r.status || 'Open';
-      const ticketText = r.title || r.ticket || '';
-      const link = r.link || '#';
-      const tr = document.createElement('tr');
-     tr.innerHTML = `
-  <td><a href="${link}" target="_blank" rel="noopener">${ticketText}</a></td>
-  <td>${r.auditTime || r.time || '-'}</td>
-  <td>${r.owner || ''}</td>
-  <td><span class="pill ${riskClass}">${riskLabel}</span></td>
-  <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
-  <td>${status}</td>
-  <td>
-    <button class="btn" data-ticket="${ticketText}">Resolve</button>
-    <button class="btn" onclick="window.open('${link}','_blank')">Open</button>
-  </td>`;
-      body.appendChild(tr);
-    }
-    body.querySelectorAll('button.btn').forEach(btn=>{
-      if(btn.textContent.trim()!=='Resolve') return;
-      btn.addEventListener('click', async (e)=>{ await resolveTicket(e.currentTarget.getAttribute('data-ticket')); });
-    });
+  const body = qs('#queueBody'); 
+  body.innerHTML = '';
+  qs('#queueCount').textContent = rows.length;
+
+  // 🔽 Sort newest to oldest by auditTime (or fallback to time)
+  rows.sort((a,b)=>{
+    const da = new Date(a.auditTime || a.time || 0);
+    const db = new Date(b.auditTime || b.time || 0);
+    return db - da;
+  });
+
+  for(const r of rows){
+    const riskLabel = riskToLabel(r.risk, r.riskLevel);
+    const riskClass = riskLabel==='High' ? 'red' : (riskLabel==='Medium' ? 'yellow' : 'green');
+    const status = r.status || 'Open';
+    const ticketText = r.title || r.ticket || '';
+    const link = r.link || '#';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><a href="${link}" target="_blank" rel="noopener">${ticketText}</a></td>
+      <td>${r.auditTime || r.time || '-'}</td>
+      <td>${r.owner || ''}</td>
+      <td><span class="pill ${riskClass}">${riskLabel}</span></td>
+      <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
+      <td>${status}</td>
+      <td>
+        <button class="btn" data-ticket="${ticketText}">Resolve</button>
+        <button class="btn" onclick="window.open('${link}','_blank')">Open</button>
+      </td>`;
+    body.appendChild(tr);
   }
+
+  // keep resolve button working
+  body.querySelectorAll('button.btn').forEach(btn=>{
+    if(btn.textContent.trim()!=='Resolve') return;
+    btn.addEventListener('click', async (e)=>{ 
+      await resolveTicket(e.currentTarget.getAttribute('data-ticket')); 
+    });
+  });
+}
+
 
   async function loadData(){
     try{
