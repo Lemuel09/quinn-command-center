@@ -24,30 +24,33 @@
     h2 { margin-top: 0; }
 
     /* Hero */
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      align-items: center;
-    }
-    .hero-copy h2 { font-size: 2rem; margin: 0; }
-    .sysline { font-size: 1rem; color: #aaa; }
-    .miniTag { font-size: 0.9rem; color: #888; margin-top: 0.5rem; }
+    <!-- HERO -->
+<div class="card hero">
+  <div class="hero-grid">
 
-    /* Quinn Eye */
-    .quinn-host { display: flex; justify-content: center; }
-    .quinn-wrap { width: 160px; height: 160px; position: relative; }
-    .quinn { width: 100%; height: 100%; position: relative; }
-    .halo, .ring, .sweep, .core, .iris {
-      position: absolute; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    }
-    .halo { width: 160px; height: 160px; border: 2px solid #4fc3f7; animation: pulse 4s infinite; }
-    .ring { width: 120px; height: 120px; border: 2px solid #81d4fa; }
-    .sweep { width: 90px; height: 90px; border: 2px dashed #29b6f6; animation: spin 6s linear infinite; }
-    .core { width: 60px; height: 60px; background: #0d47a1; }
-    .iris { width: 20px; height: 20px; background: #bbdefb; }
+    <!-- LEFT: text -->
+    <div class="hero-copy">
+      <h2>Takumi</h2>
+      <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
+      <p class="miniTag">The one AI agent to bind all risks and bring them to light...</p>
+    </div>
 
-    @keyframes spin { from{ transform: translate(-50%, -50%) rotate(0); } to{ transform: translate(-50%, -50%) rotate(360deg);} }
-    @keyframes pulse { 0%,100%{opacity:.6;} 50%{opacity:1;} }
+    <!-- RIGHT: Eye -->
+    <div id="quinnHost" class="quinn-host">
+      <div class="quinn-wrap">
+        <div class="quinn">
+          <div class="halo"></div>
+          <div class="ring"></div>
+          <div class="sweep"></div>
+          <div class="core"></div>
+          <div class="iris"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
     /* Tables */
     table { width: 100%; border-collapse: collapse; }
