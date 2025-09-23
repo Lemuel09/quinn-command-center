@@ -108,20 +108,7 @@
       <p class="miniTag">Crafted with Monozukuri spirit — precision AI for risk and quality.</p>
 
       <!-- Toolbar -->
-      <div class="toolbar" style="padding-left:0">
-        <button class="btn" id="btnOpenQuickAudit">➕ Quick Audit</button>
-        <button class="btn" id="btnRandomAudit">🎲 Random Audit</button>
-        <button class="btn" id="btnInsights">📊 View Insights</button>
-        <button class="btn" id="btnRefresh">🔄 Refresh</button>
-
-        <!-- DEMO BUTTONS -->
-        <button class="btn" id="btnTicketDemo">🎫 Run Ticket Demo</button>
-        <button class="btn" id="btnCallDemo">📞 Run Call Demo</button>
-      </div>
-
-      <!-- Status feedback -->
-      <div id="demoStatus" style="margin-top:10px;color:var(--green);font-weight:bold;"></div>
-    </div>
+  
 
     <!-- RIGHT: eye -->
     <div id="quinnHost" class="quinn-host">
@@ -154,11 +141,15 @@
     <div class="card">
       <h2 style="display:flex;align-items:center;gap:8px">🧯 High-Risk Queue <span class="pill red" id="queueCount">0</span></h2>
       <div class="body"><div class="table-wrap"><table>
-        <thead><tr>
-          <th style="min-width:140px">Ticket</th><th style="min-width:140px">Owner</th>
-          <th style="min-width:110px">Risk</th><th>Issue</th>
-          <th style="min-width:120px">Status</th><th style="min-width:160px">Action</th>
-        </tr></thead>
+       <thead><tr>
+  <th style="min-width:140px">Ticket</th>
+  <th style="min-width:120px">Date</th>
+  <th style="min-width:140px">Owner</th>
+  <th style="min-width:110px">Risk</th>
+  <th>Issue</th>
+  <th style="min-width:120px">Status</th>
+  <th style="min-width:160px">Action</th>
+</tr></thead>
         <tbody id="queueBody"></tbody>
       </table></div></div>
     </div>
@@ -284,16 +275,17 @@
       const ticketText = r.title || r.ticket || '';
       const link = r.link || '#';
       const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><a href="${link}" target="_blank" rel="noopener">${ticketText}</a></td>
-        <td>${r.owner || ''}</td>
-        <td><span class="pill ${riskClass}">${riskLabel}</span></td>
-        <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
-        <td>${status}</td>
-        <td>
-          <button class="btn" data-ticket="${ticketText}">Resolve</button>
-          <button class="btn" onclick="window.open('${link}','_blank')">Open</button>
-        </td>`;
+     tr.innerHTML = `
+  <td><a href="${link}" target="_blank" rel="noopener">${ticketText}</a></td>
+  <td>${r.auditTime || r.time || '-'}</td>
+  <td>${r.owner || ''}</td>
+  <td><span class="pill ${riskClass}">${riskLabel}</span></td>
+  <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
+  <td>${status}</td>
+  <td>
+    <button class="btn" data-ticket="${ticketText}">Resolve</button>
+    <button class="btn" onclick="window.open('${link}','_blank')">Open</button>
+  </td>`;
       body.appendChild(tr);
     }
     body.querySelectorAll('button.btn').forEach(btn=>{
