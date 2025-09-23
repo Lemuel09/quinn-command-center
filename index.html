@@ -1,74 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Takumi — Command Center</title>
-  <style>
-    :root{
-      --bg:#0B1020; --panel:rgba(255,255,255,.06); --panel2:rgba(255,255,255,.02);
-      --line:rgba(255,255,255,.12); --text:#e8f7ff; --cyan:#00F0FF;
-      --green:#3BFF88; --purple:#8A7CFF;
-    }
-    html,body{
-      height:100%;margin:0;
-      background:radial-gradient(1200px 800px at 50% 0%, #121832 0%, #0B1020 60%, #05070e 100%);
-      color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif
-    }
-    .wrap{max-width:1200px;margin:18px auto 60px;padding:0 16px}
-    .card{background:linear-gradient(180deg, var(--panel), var(--panel2));
-      border:1px solid var(--line);border-radius:20px;
-      box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
-      backdrop-filter: blur(10px);margin-bottom:16px}
-    .card h2{margin:0;padding:16px 18px 6px;font-size:1.1rem;letter-spacing:.3px}
-    .card .body{padding:14px 18px 18px}
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Takumi — Command Center</title>
+<style>
+  :root{
+    --bg:#0B1020; --panel:rgba(255,255,255,.06); --panel2:rgba(255,255,255,.02);
+    --line:rgba(255,255,255,.12); --text:#e8f7ff; --cyan:#00F0FF; --green:#3BFF88; --purple:#8A7CFF;
+  }
+  html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 50% 0%, #121832 0%, #0B1020 60%, #05070e 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--cyan);text-decoration:none}
+  .wrap{max-width:1200px;margin:18px auto 60px;padding:0 16px}
+  .card{background:linear-gradient(180deg, var(--panel), var(--panel2));border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter: blur(10px)}
+  .card h2{margin:0;padding:16px 18px 6px;font-size:1.1rem;letter-spacing:.3px}
+  .card .body{padding:14px 18px 18px}
 
-    /* Title */
-    .titlebar{text-align:center;padding:10px 0 2px}
-    .titlebar h1{margin:0;font-weight:800;letter-spacing:.2px;
-      font-size:clamp(22px,3.2vw,36px)}
+  /* Title */
+  .titlebar{padding:10px 0 2px;text-align:center}
+  .titlebar h1{margin:0;font-weight:800;letter-spacing:.2px;font-size:clamp(22px,3.2vw,36px)}
 
-    /* HERO */
-    .hero{padding:18px}
-    .hero-grid{display:grid;grid-template-columns:minmax(320px,520px) 1fr;
-      gap:18px;align-items:center}
-    @media(max-width:900px){.hero-grid{grid-template-columns:1fr}}
-    .hero-copy h2{margin:0 0 8px;font-weight:900;line-height:.95;
-      font-size:clamp(56px,9vw,120px);
-      text-shadow:0 8px 30px rgba(0,0,0,.45),0 0 24px rgba(0,240,255,.18)}
-    .hero-copy .sysline{font-size:1rem;color:#d8e7ff;opacity:.95;margin:0 0 6px}
-    .hero-copy .miniTag{font-style:italic;color:#9fb7ff;opacity:.95;margin:0}
-    .takumi-video video{width:100%;height:auto;border-radius:12px;
-      filter:drop-shadow(0 0 25px rgba(0,229,255,0.3))}
+  /* HERO */
+  .hero{margin-top:10px;padding:18px}
+  .hero-grid{display:grid;grid-template-columns:minmax(320px,520px) 1fr;gap:18px;align-items:center}
+  @media(max-width:900px){ .hero-grid{grid-template-columns:1fr} }
+  .hero-copy h2{margin:0 0 8px;font-weight:900;line-height:.95;
+    font-size:clamp(56px,9vw,120px);text-shadow:0 8px 30px rgba(0,0,0,.45), 0 0 24px rgba(0,240,255,.18)}
+  .hero-copy .sysline{font-size:1rem;color:#d8e7ff;opacity:.95;margin:0 0 6px}
+  .hero-copy .miniTag{font-style:italic;color:#9fb7ff;opacity:.95;margin:0}
+  .takumi-video video{width:100%;height:auto;border-radius:12px;filter:drop-shadow(0 0 25px rgba(0,229,255,0.3))}
 
-    /* KPIs + tables */
-    .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    @media(min-width:680px){.kpis{grid-template-columns:repeat(4,1fr)}}
-    .kpi{padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);
-      background:radial-gradient(160px 80px at 20% 0%, rgba(0,240,255,.12), rgba(255,255,255,0));
-      box-shadow:inset 0 0 24px rgba(0,240,255,.06)}
-    .kpi .label{opacity:.8;font-size:.85rem}
-    .kpi .value{font-size:1.6rem;font-weight:700;margin-top:4px}
-    .table-wrap{border:1px solid rgba(255,255,255,.12);border-radius:14px;overflow:auto}
-    table{width:100%;border-collapse:separate;border-spacing:0}
-    th,td{padding:10px 12px;text-align:left;font-size:.92rem}
-    thead th{position:sticky;top:0;background:rgba(11,16,32,.9);backdrop-filter: blur(6px)}
-    tbody tr{border-bottom:1px solid rgba(255,255,255,.08)}
-    tbody tr:hover{background:rgba(255,255,255,.03)}
-    .pill{display:inline-flex;gap:6px;align-items:center;font-size:.75rem;
-      padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12)}
-    .pill.red{background:rgba(255,59,59,.15);border-color:rgba(255,59,59,.35)}
-    .pill.yellow{background:rgba(255,190,70,.12);border-color:rgba(255,190,70,.35)}
-    .pill.green{background:rgba(59,255,136,.12);border-color:rgba(59,255,136,.35)}
+  /* KPI + tables */
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(min-width:680px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background: radial-gradient(160px 80px at 20% 0%, rgba(0,240,255,.12), rgba(255,255,255,0));box-shadow: inset 0 0 24px rgba(0,240,255,.06)}
+  .kpi .label{opacity:.8;font-size:.85rem}
+  .kpi .value{font-size:1.6rem;font-weight:700;margin-top:4px}
+  .kpi .sub{opacity:.75;font-size:.8rem}
+  .table-wrap{border:1px solid rgba(255,255,255,.12);border-radius:14px;overflow:auto}
+  table{width:100%;border-collapse:separate;border-spacing:0}
+  th,td{padding:10px 12px;text-align:left;font-size:.92rem}
+  thead th{position:sticky;top:0;background:rgba(11,16,32,.9);backdrop-filter: blur(6px);z-index:1}
+  tbody tr{border-bottom:1px solid rgba(255,255,255,.08)}
+  tbody tr:hover{background:rgba(255,255,255,.03)}
+  .pill{display:inline-flex;gap:6px;align-items:center;font-size:.75rem;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+  .pill.red{background:rgba(255,59,59,.15);border-color:rgba(255,59,59,.35)}
+  .pill.yellow{background:rgba(255,190,70,.12);border-color:rgba(255,190,70,.35)}
+  .pill.green{background:rgba(59,255,136,.12);border-color:rgba(59,255,136,.35)}
 
-    /* Toast */
-    .toast{position:fixed;right:18px;bottom:18px;background:rgba(20,28,48,.95);
-      border:1px solid rgba(255,255,255,.15);color:#e8f7ff;
-      padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(6px);
-      transition:.25s}
-    .toast.show{opacity:1;transform:translateY(0)}
-  </style>
+  /* Modal + toast */
+  .backdrop{position:fixed;inset:0;background:rgba(5,7,14,.6);backdrop-filter: blur(4px);display:none;align-items:center;justify-content:center;z-index:999}
+  .backdrop.show{display:flex}
+  .modal{width:min(720px,92vw);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+  .modal header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px}
+  .modal .content{padding:0 16px 16px}
+  .grid{display:grid;gap:10px;grid-template-columns:1fr}
+  @media(min-width:680px){.grid{grid-template-columns:1fr 1fr}}
+  label{font-size:.85rem;opacity:.9}
+  input,select,textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e8f7ff;border-radius:10px;padding:10px}
+  textarea{min-height:90px}
+  .toast{position:fixed;right:18px;bottom:18px;background:rgba(20,28,48,.95);border:1px solid rgba(255,255,255,.15);color:#e8f7ff;padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(6px);transition:.25s}
+  .toast.show{opacity:1;transform:translateY(0)}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -79,13 +72,13 @@
   <!-- HERO -->
   <div class="card hero">
     <div class="hero-grid">
-      <!-- LEFT: text -->
+      <!-- LEFT -->
       <div class="hero-copy">
         <h2>Takumi</h2>
         <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
         <p class="miniTag">The one AI agent to bind all risks and bring them to light...</p>
       </div>
-      <!-- RIGHT: Takumi video -->
+      <!-- RIGHT -->
       <div id="quinnHost" class="quinn-host">
         <div class="takumi-video">
           <video autoplay muted loop playsinline>
@@ -100,41 +93,37 @@
   <!-- KPIs -->
   <div class="card"><div class="body">
     <div class="kpis" id="kpis">
-      <div class="kpi"><div class="label">High-Risk Open</div><div class="value" id="kpiHigh">–</div></div>
-      <div class="kpi"><div class="label">Medium Risk</div><div class="value" id="kpiMed">–</div></div>
-      <div class="kpi"><div class="label">Resolved (7d)</div><div class="value" id="kpiRes7">–</div></div>
-      <div class="kpi"><div class="label">Avg Audit Score (7d)</div><div class="value" id="kpiScore">–</div></div>
+      <div class="kpi"><div class="label">High-Risk Open</div><div class="value" id="kpiHigh">–</div><div class="sub">Unresolved</div></div>
+      <div class="kpi"><div class="label">Medium Risk</div><div class="value" id="kpiMed">–</div><div class="sub">Unresolved</div></div>
+      <div class="kpi"><div class="label">Resolved (7d)</div><div class="value" id="kpiRes7">–</div><div class="sub">Last 7 days</div></div>
+      <div class="kpi"><div class="label">Avg Audit Score (7d)</div><div class="value" id="kpiScore">–</div><div class="sub">Across audits</div></div>
     </div>
   </div></div>
 
   <!-- Risk + Live Audits -->
   <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px">
     <div class="card">
-      <h2>🧯 High-Risk Queue <span class="pill red" id="queueCount">0</span></h2>
+      <h2 style="display:flex;align-items:center;gap:8px">🧯 High-Risk Queue <span class="pill red" id="queueCount">0</span></h2>
       <div class="body"><div class="table-wrap"><table>
         <thead><tr>
-          <th>Ticket</th><th>Owner</th><th>Risk</th><th>Issue</th>
-          <th>Audit Time</th><th>Resolution Time</th><th>Status</th><th>Action</th>
+          <th>Ticket</th><th>Owner</th><th>Risk</th><th>Issue</th><th>Audit Time</th><th>Resolution Time</th><th>Status</th><th>Action</th>
         </tr></thead>
         <tbody id="queueBody"></tbody>
       </table></div></div>
     </div>
     <div style="display:flex;flex-direction:column;gap:16px">
       <div class="card">
-        <h2>🛰️ Live Audits</h2>
+        <h2>🛰️ Live Audits (auto + manual)</h2>
         <div class="body"><div class="table-wrap"><table>
           <thead><tr>
-            <th>Audit Time</th><th>Ticket</th><th>Channel</th>
-            <th>Score</th><th>Risk</th><th>Source</th><th>Issue</th><th>Resolution Time</th>
+            <th>Audit Time</th><th>Ticket</th><th>Channel</th><th>Score</th><th>Risk</th><th>Source</th><th>Issue</th><th>Resolution Time</th>
           </tr></thead>
           <tbody id="recentBody"></tbody>
         </table></div></div>
       </div>
       <div class="card">
         <h2>🔎 Search</h2>
-        <div class="body">
-          <input id="searchBox" placeholder="Search ticket, owner, issue…" style="width:100%; padding:8px; border-radius:8px;"/>
-        </div>
+        <div class="body"><div class="toolbar" style="padding:0"><div class="search" style="margin:0;width:100%"><input id="searchBox" placeholder="Search ticket, owner, issue…"/></div></div></div>
       </div>
     </div>
   </div>
@@ -143,7 +132,108 @@
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- JS -->
-<script src="app.js"></script>
+<script>
+  /* ====== CONFIG ====== */
+ const WEB_APP_URL = 'https://script.google.com/a/macros/thestudio.com/s/AKfycbzabzQA1Gs4n9wy_9DQpVTVrFEpkd-3kAJgXIDhFj2AcpImvfnYXQZ-5qTWnI8Q3I/exec'; // Replace with your Apps Script
+  const TOKEN       = 'TAKUMI_PORTAL_TOKEN';
+  const INSIGHTS_URL= 'https://lookerstudio.google.com/reporting/YOUR_REPORT_ID';
+
+  // Utilities
+  const qs = (s,root=document)=>root.querySelector(s);
+  const toast = (msg)=>{ const t=qs('#toast'); if(!t)return; t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); };
+
+  // Fetch wrapper
+  function fetchFn(fn, params={}) {
+    const u = new URL(WEB_APP_URL);
+    u.searchParams.set('fn', fn);
+    Object.entries(params).forEach(([k,v])=>u.searchParams.set(k, v));
+    return fetch(u, {mode:'cors'}).then(r=>r.json()).catch(()=>[]);
+  }
+
+  // Risk label
+  function riskToLabel(risk, riskLevel){
+    if (riskLevel) return riskLevel;
+    const n = Number(risk);
+    if (!isFinite(n)) return 'Low';
+    const pct = n <= 1 ? (n*100) : n;
+    if (pct >= 70) return 'High';
+    if (pct >= 40) return 'Medium';
+    return 'Low';
+  }
+
+  // Render KPIs
+  function renderKpis(k){
+    qs('#kpiHigh').textContent = k.highRisk ?? '–';
+    qs('#kpiMed').textContent  = k.medOpen  ?? '–';
+    qs('#kpiRes7').textContent = k.resolved7d ?? '–';
+    qs('#kpiScore').textContent= k.avgScore7d ?? '–';
+  }
+
+  // Render queue
+  let ALL_ALERTS=[];
+  function renderQueue(rows){
+    const body = qs('#queueBody'); body.innerHTML='';
+    qs('#queueCount').textContent = rows.length;
+    for(const r of rows){
+      const riskLabel=riskToLabel(r.risk,r.riskLevel);
+      const riskClass=riskLabel==='High'?'red':(riskLabel==='Medium'?'yellow':'green');
+      const tr=document.createElement('tr');
+      tr.innerHTML=`
+        <td><a href="${r.link||'#'}" target="_blank">${r.title||r.ticket||''}</a></td>
+        <td>${r.owner||''}</td>
+        <td><span class="pill ${riskClass}">${riskLabel}</span></td>
+        <td>${r.issues||''}</td>
+        <td>${r.auditTime||'-'}</td>
+        <td>${r.resolutionTime||'-'}</td>
+        <td>${r.status||'Open'}</td>
+        <td><button class="btn">Resolve</button></td>`;
+      body.appendChild(tr);
+    }
+  }
+
+  // Render audits
+  function renderRecent(rows){
+    const body=qs('#recentBody'); body.innerHTML='';
+    for(const x of rows){
+      const label=riskToLabel(x.risk,x.riskLevel);
+      const riskClass=(label==='High'?'red':(label==='Medium'?'yellow':'green'));
+      const tr=document.createElement('tr');
+      tr.innerHTML=`
+        <td>${x.auditTime||x.time||'-'}</td>
+        <td><a href="${x.link||'#'}">${x.title||x.ticket||''}</a></td>
+        <td>${x.channel||''}</td>
+        <td>${x.score||'-'}</td>
+        <td><span class="pill ${riskClass}">${label}</span></td>
+        <td>${x.source||''}</td>
+        <td>${x.issues||''}</td>
+        <td>${x.resolutionTime||'-'}</td>`;
+      body.appendChild(tr);
+    }
+  }
+
+  // Load data
+  async function loadData(){
+    try{
+      const data=await fetchFn('alerts');
+      const alerts=Array.isArray(data.alerts)?data.alerts:[];
+      ALL_ALERTS=alerts; renderQueue(alerts); renderKpis(data.kpis||{});
+    }catch(e){console.error(e); toast('⚠️ Failed to load alerts');}
+    loadRecentAudits();
+  }
+  async function loadRecentAudits(){
+    try{
+      const d=await fetchFn('recent'); renderRecent(d.rows||[]);
+    }catch(e){console.error(e);}
+  }
+
+  // Search
+  qs('#searchBox').addEventListener('input',(e)=>{
+    const q=e.target.value.toLowerCase(); if(!q) return renderQueue(ALL_ALERTS);
+    renderQueue(ALL_ALERTS.filter(r=>(r.title||'').toLowerCase().includes(q)||(r.owner||'').toLowerCase().includes(q)||(r.issues||'').toLowerCase().includes(q)));
+  });
+
+  // Init
+  loadData(); setInterval(loadRecentAudits,10000);
+</script>
 </body>
 </html>
