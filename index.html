@@ -319,8 +319,10 @@
   async function loadRecentAudits(){
   try{
     const d = await fetchFn('recent');
-    const rows = d?.rows || (Array.isArray(d) ? d : []);
-    
+
+    // If backend returns { rows: [...] } use that, otherwise treat as array
+    const rows = Array.isArray(d) ? d : (d?.rows || []);
+
     // 🔽 Sort newest to oldest by time
     rows.sort((a,b)=>{
       const da = new Date(a.auditTime || a.time || 0);
@@ -344,9 +346,11 @@
         <td title="${(x.issues||'')}">${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}</td>`;
       body.appendChild(tr);
     });
-  }catch(e){ console.error(e); /* silent */ }
+  }catch(e){ 
+    console.error(e); 
+    toast('⚠️ Could not load recent audits');
+  }
 }
-
 
   // Quick search
   qs('#searchBox').addEventListener('input', (e)=>{
