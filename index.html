@@ -244,8 +244,8 @@
 
   // Renderers
   let ALL_ALERTS = [];
-  function riskToLabel(risk, riskLevel){
-    if (riskLevel) return riskLevel;
+  function riskToLabel(risk, risklevel){
+    if (risklevel) return risklevel;
     const n = Number(risk);
     if (!isFinite(n)) return 'Low';
     // Accept 0..1 or 0..100
@@ -275,7 +275,7 @@
   });
 
   for(const r of rows){
-    const riskLabel = riskToLabel(r.risk, r.riskLevel);
+    const riskLabel = riskToLabel(r.risk, r.risklevel);
     const riskClass = riskLabel==='High' ? 'red' : (riskLabel==='Medium' ? 'yellow' : 'green');
     const status = r.status || 'Open';
     const ticketText = r.title || r.ticket || '';
@@ -332,7 +332,7 @@
     const body = qs('#recentBody'); 
     body.innerHTML = '';
     rows.forEach(x=>{
-      const label = riskToLabel(x.risk, x.riskLevel);
+      const label = riskToLabel(x.risk, x.risklevel);
       const riskClass = (label==='High'?'red':(label==='Medium'?'yellow':'green'));
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -391,7 +391,7 @@
     inputs.owner.value   = prefill.owner || '';
     inputs.link.value    = prefill.link || '';
     inputs.score.value   = prefill.score || '';
-    inputs.risk.value    = prefill.risk || prefill.riskLevel || 'Low';
+    inputs.risk.value    = prefill.risk || prefill.risklevel || 'Low';
     inputs.issues.value  = prefill.issues || '';
     backdrop.classList.add('show');
   }
@@ -406,7 +406,7 @@
       owner: inputs.owner.value.trim(),
       link: inputs.link.value.trim(),
       score: inputs.score.value.trim(),
-      riskLevel: inputs.risk.value.trim(),
+      risklevel: inputs.risk.value.trim(),
       issues: inputs.issues.value.trim()
     };
     if(!payload.ticket){ toast('Ticket/Call/Chat ID is required'); return; }
