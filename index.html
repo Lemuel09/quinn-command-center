@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,6 +53,43 @@
   @keyframes sweep {to{--sweep-from:360deg}}
   @keyframes breathe {0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
   @keyframes iris-pulse {0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+  /* TOOLBAR */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:8px 0 0}
+  .btn{appearance:none;background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.15);color:#e6fbff;padding:10px 14px;border-radius:12px;cursor:pointer;transition:.2s;backdrop-filter: blur(6px);font-weight:600}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.25), 0 0 24px rgba(0,240,255,.25)}
+
+  /* KPI + tables */
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(min-width:680px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background: radial-gradient(160px 80px at 20% 0%, rgba(0,240,255,.12), rgba(255,255,255,0));box-shadow: inset 0 0 24px rgba(0,240,255,.06)}
+  .kpi .label{opacity:.8;font-size:.85rem}
+  .kpi .value{font-size:1.6rem;font-weight:700;margin-top:4px}
+  .kpi .sub{opacity:.75;font-size:.8rem}
+  .table-wrap{border:1px solid rgba(255,255,255,.12);border-radius:14px;overflow:auto}
+  table{width:100%;border-collapse:separate;border-spacing:0}
+  th,td{padding:10px 12px;text-align:left;font-size:.92rem}
+  thead th{position:sticky;top:0;background:rgba(11,16,32,.9);backdrop-filter: blur(6px);z-index:1}
+  tbody tr{border-bottom:1px solid rgba(255,255,255,.08)}
+  tbody tr:hover{background:rgba(255,255,255,.03)}
+  .pill{display:inline-flex;gap:6px;align-items:center;font-size:.75rem;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+  .pill.red{background:rgba(255,59,59,.15);border-color:rgba(255,59,59,.35)}
+  .pill.yellow{background:rgba(255,190,70,.12);border-color:rgba(255,190,70,.35)}
+  .pill.green{background:rgba(59,255,136,.12);border-color:rgba(59,255,136,.35)}
+
+  /* Modal + toast */
+  .backdrop{position:fixed;inset:0;background:rgba(5,7,14,.6);backdrop-filter: blur(4px);display:none;align-items:center;justify-content:center;z-index:999}
+  .backdrop.show{display:flex}
+  .modal{width:min(720px,92vw);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+  .modal header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px}
+  .modal .content{padding:0 16px 16px}
+  .grid{display:grid;gap:10px;grid-template-columns:1fr}
+  @media(min-width:680px){.grid{grid-template-columns:1fr 1fr}}
+  label{font-size:.85rem;opacity:.9}
+  input,select,textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e8f7ff;border-radius:10px;padding:10px}
+  textarea{min-height:90px}
+  .toast{position:fixed;right:18px;bottom:18px;background:rgba(20,28,48,.95);border:1px solid rgba(255,255,255,.15);color:#e8f7ff;padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(6px);transition:.25s}
+  .toast.show{opacity:1;transform:translateY(0)}
 </style>
 </head>
 <body>
@@ -63,25 +101,29 @@
  <div class="card hero">
   <div class="hero-grid">
 
-   <!-- LEFT: text -->
-<div class="hero-copy">
-  <h2>Takumi</h2>
-  <p class="sysline">THE/STUDIO’s Quality &amp; AI Red-Flag System</p>
-  <p class="miniTag">Crafted with Monozukuri spirit — precision AI for risk and quality.</p>
-</div> <!-- ✅ properly closed hero-copy -->
+    <!-- LEFT: text -->
+    <div class="hero-copy">
+      <h2>Takumi</h2>
+      <p class="sysline">THE/STUDIO’s Quality &amp; AI Red-Flag System</p>
+      <p class="miniTag">Crafted with Monozukuri spirit — precision AI for risk and quality.</p>
+ </div> <!-- ✅ properly close hero-copy -->
 
-<!-- RIGHT: eye -->
-<div id="quinnHost" class="quinn-host">
-  <div class="quinn-wrap">
-    <div class="quinn">
-      <div class="halo"></div>
-      <div class="ring"></div>
-      <div class="sweep"></div>
-      <div class="core"></div>
-      <div class="iris"></div>
+    <!-- RIGHT: eye -->
+    <div id="quinnHost" class="quinn-host">
+      <div class="quinn-wrap">
+        <div class="quinn">
+          <div class="halo"></div>
+          <div class="ring"></div>
+          <div class="sweep"></div>
+          <div class="core"></div>
+          <div class="iris"></div>
+        </div>
+      </div>
     </div>
+
   </div>
 </div>
+
 
   <!-- KPIs -->
   <div class="card"><div class="body">
@@ -98,14 +140,14 @@
       <h2 style="display:flex;align-items:center;gap:8px">🧯 High-Risk Queue <span class="pill red" id="queueCount">0</span></h2>
       <div class="body"><div class="table-wrap"><table>
        <thead><tr>
-          <th style="min-width:140px">Ticket</th>
-          <th style="min-width:120px">Date</th>
-          <th style="min-width:140px">Owner</th>
-          <th style="min-width:110px">Risk</th>
-          <th>Issue</th>
-          <th style="min-width:120px">Status</th>
-          <th style="min-width:160px">Action</th>
-        </tr></thead>
+  <th style="min-width:140px">Ticket</th>
+  <th style="min-width:120px">Date</th>
+  <th style="min-width:140px">Owner</th>
+  <th style="min-width:110px">Risk</th>
+  <th>Issue</th>
+  <th style="min-width:120px">Status</th>
+  <th style="min-width:160px">Action</th>
+</tr></thead>
         <tbody id="queueBody"></tbody>
       </table></div></div>
     </div>
@@ -115,13 +157,8 @@
         <h2>🛰️ Live Audits (auto + manual)</h2>
         <div class="body"><div class="table-wrap"><table>
           <thead><tr>
-            <th style="min-width:120px">Time</th>
-            <th style="min-width:140px">Ticket</th>
-            <th style="min-width:90px">Channel</th>
-            <th style="min-width:80px">Score</th>
-            <th style="min-width:90px">Risk</th>
-            <th style="min-width:120px">Source</th>
-            <th>Notes</th>
+            <th style="min-width:120px">Time</th><th style="min-width:140px">Ticket</th><th style="min-width:90px">Channel</th>
+            <th style="min-width:80px">Score</th><th style="min-width:90px">Risk</th><th style="min-width:120px">Source</th><th>Notes</th>
           </tr></thead>
           <tbody id="recentBody"></tbody>
         </table></div></div>
@@ -131,66 +168,30 @@
         <h2>🔎 Search</h2>
         <div class="body">
           <div class="toolbar" style="padding:0">
-            <div class="search" style="margin:0;width:100%">
-              <input id="searchBox" placeholder="Search ticket, owner, issue…"/>
-            </div>
+            <div class="search" style="margin:0;width:100%"><input id="searchBox" placeholder="Search ticket, owner, issue…"/></div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <!-- Quick Audit Modal -->
 <div class="backdrop" id="auditBackdrop">
   <div class="modal">
-    <header>
-      <h3 style="margin:0">➕ Quick Audit</h3>
-      <button class="btn" id="btnCloseModal">✖</button>
-    </header>
+    <header><h3 style="margin:0">➕ Quick Audit</h3><button class="btn" id="btnCloseModal">✖</button></header>
     <div class="content">
       <div class="grid">
-        <div>
-          <label>Ticket / Call / Chat ID</label>
-          <input id="qa_ticket" placeholder="01-ABC123"/>
-        </div>
-        <div>
-          <label>Channel</label>
-          <select id="qa_channel">
-            <option>Ticket</option>
-            <option>Call</option>
-            <option>Chat</option>
-          </select>
-        </div>
-        <div>
-          <label>Owner (optional)</label>
-          <input id="qa_owner" placeholder="Owner name"/>
-        </div>
-        <div>
-          <label>Link (optional)</label>
-          <input id="qa_link" placeholder="https://…"/>
-        </div>
+        <div><label>Ticket / Call / Chat ID</label><input id="qa_ticket" placeholder="01-ABC123"/></div>
+        <div><label>Channel</label><select id="qa_channel"><option>Ticket</option><option>Call</option><option>Chat</option></select></div>
+        <div><label>Owner (optional)</label><input id="qa_owner" placeholder="Owner name"/></div>
+        <div><label>Link (optional)</label><input id="qa_link" placeholder="https://…"/></div>
       </div>
-
       <div class="grid" style="margin-top:8px">
-        <div>
-          <label>Score %</label>
-          <input id="qa_score" type="number" min="0" max="100" step="0.1" placeholder="85"/>
-        </div>
-        <div>
-          <label>Risk Level</label>
-          <select id="qa_risk">
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
-          </select>
-        </div>
+        <div><label>Score %</label><input id="qa_score" type="number" min="0" max="100" step="0.1" placeholder="85"/></div>
+        <div><label>Risk Level</label><select id="qa_risk"><option>Low</option><option>Medium</option><option>High</option></select></div>
       </div>
-
-      <div style="margin-top:8px">
-        <label>Issues / Notes</label>
-        <textarea id="qa_issues" placeholder="Key findings, notes, or remediation…"></textarea>
-      </div>
-
+      <div style="margin-top:8px"><label>Issues / Notes</label><textarea id="qa_issues" placeholder="Key findings, notes, or remediation…"></textarea></div>
       <div style="display:flex;gap:10px;margin-top:14px">
         <button class="btn" id="btnSaveAudit">Save Audit</button>
         <button class="btn" id="btnRandomFill">🎲 Random Ticket</button>
@@ -199,8 +200,8 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
+
 <script>
   /* ====== EDIT THESE THREE ====== */
   const WEB_APP_URL = 'https://script.google.com/a/macros/thestudio.com/s/AKfycbyWe3NhOAzFtBOT7IRC2l_eUdoJSZ-Rdc2KPmD2Zd5gUTjTKX0CqZ5y--KoBt3DnKLH/exec';
@@ -208,7 +209,7 @@
   const INSIGHTS_URL= 'https://lookerstudio.google.com/reporting/YOUR_REPORT_ID';
   /* ============================== */
 
-  // === Eye parallax ===
+  // Eye parallax
   (function(){
     const iris = document.querySelector('.iris');
     const rectEl = document.querySelector('.quinn-wrap');
@@ -221,16 +222,11 @@
     rectEl.addEventListener('mouseleave', ()=>{ iris.style.transform = 'translate(0,0) scale(1)'; });
   })();
 
-  // === Utilities ===
+  // Utilities
   const qs = (s,root=document)=>root.querySelector(s);
-  const toast = (msg)=>{ 
-    const t=qs('#toast'); 
-    t.textContent=msg; 
-    t.classList.add('show'); 
-    setTimeout(()=>t.classList.remove('show'), 2200); 
-  };
+  const toast = (msg)=>{ const t=qs('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); };
 
-  // === Generic fetch with JSONP fallback ===
+  // Generic fetch with JSONP fallback
   function fetchFn(fn, params={}){
     const u = new URL(WEB_APP_URL);
     u.searchParams.set('fn', fn);
@@ -247,12 +243,13 @@
       }));
   }
 
-  // === Renderers ===
+  // Renderers
   let ALL_ALERTS = [];
   function riskToLabel(risk, riskLevel){
     if (riskLevel) return riskLevel;
     const n = Number(risk);
     if (!isFinite(n)) return 'Low';
+    // Accept 0..1 or 0..100
     const pct = n <= 1 ? (n*100) : n;
     if (pct >= 70) return 'High';
     if (pct >= 40) return 'Medium';
@@ -266,15 +263,15 @@
     qs('#kpiScore').textContent= k.avgScore7d ?? k.avgScore ?? '–';
   }
 
-function renderQueue(rows){
+  function renderQueue(rows){
   const body = qs('#queueBody'); 
   body.innerHTML = '';
   qs('#queueCount').textContent = rows.length;
 
-  // 🔽 Sort newest to oldest by time
+  // 🔽 Sort newest to oldest by auditTime (or fallback to time)
   rows.sort((a,b)=>{
-    const da = new Date(a.time || 0);
-    const db = new Date(b.time || 0);
+    const da = new Date(a.auditTime || a.time || 0);
+    const db = new Date(b.auditTime || b.time || 0);
     return db - da;
   });
 
@@ -288,7 +285,7 @@ function renderQueue(rows){
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><a href="${link}" target="_blank" rel="noopener">${ticketText}</a></td>
-      <td>${r.time || '-'}</td>
+      <td>${r.auditTime || r.time || '-'}</td>
       <td>${r.owner || ''}</td>
       <td><span class="pill ${riskClass}">${riskLabel}</span></td>
       <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
@@ -326,10 +323,6 @@ function renderQueue(rows){
       const d = await fetchFn('recent');
       const rows = d?.rows || (Array.isArray(d) ? d : []);
       const body = qs('#recentBody'); body.innerHTML = '';
-
-      // 🔽 newest first
-      rows.sort((a,b)=> new Date(b.time||0) - new Date(a.time||0));
-
       rows.forEach(x=>{
         const label = riskToLabel(x.risk, x.riskLevel);
         const riskClass = (label==='High'?'red':(label==='Medium'?'yellow':'green'));
@@ -347,7 +340,7 @@ function renderQueue(rows){
     }catch(e){ console.error(e); /* silent */ }
   }
 
-  // === Quick search ===
+  // Quick search
   qs('#searchBox').addEventListener('input', (e)=>{
     const q = e.target.value.toLowerCase().trim();
     if(!q) return renderQueue(ALL_ALERTS);
@@ -360,7 +353,7 @@ function renderQueue(rows){
     renderQueue(out);
   });
 
-  // === Resolve ===
+  // Resolve + Quick audit
   async function resolveTicket(ticket){
     try{
       const res = await fetch(WEB_APP_URL, {
@@ -370,13 +363,12 @@ function renderQueue(rows){
 
       if(res && res.ok){ toast('✅ Resolved'); loadData(); return; }
 
-      // fallback
+      // fallback via JSONP
       const d = await fetchFn('resolve', {ticket, by:'manager@company.com', token:TOKEN});
       if(d && d.ok){ toast('✅ Resolved'); loadData(); } else { toast('⚠️ Could not resolve'); }
     }catch(_){ toast('⚠️ Resolve failed'); }
   }
 
-  // === Quick Audit Modal ===
   const backdrop = qs('#auditBackdrop');
   const inputs = {
     ticket: qs('#qa_ticket'), channel: qs('#qa_channel'), owner: qs('#qa_owner'),
@@ -424,7 +416,6 @@ function renderQueue(rows){
     }catch(e){ openAuditModal(); toast('No candidates found — enter an ID'); }
   }
 
-  // === Event Bindings ===
   document.getElementById('btnOpenQuickAudit').onclick = ()=> openAuditModal();
   document.getElementById('btnRandomAudit').onclick    = ()=> randomFill();
   document.getElementById('btnInsights').onclick       = ()=> window.open(INSIGHTS_URL,'_blank');
@@ -432,6 +423,7 @@ function renderQueue(rows){
   document.getElementById('btnSaveAudit').onclick      = saveAudit;
   document.getElementById('btnRandomFill').onclick     = randomFill;
 
+  // === DEMO BUTTONS ===
   document.getElementById('btnTicketDemo').onclick = async () => {
     qs('#demoStatus').textContent = "⏳ Running Ticket Demo...";
     try {
@@ -454,7 +446,8 @@ function renderQueue(rows){
     }
   };
 
-  // === Init ===
   loadData();
   setInterval(loadRecentAudits, 10000);
 </script>
+</body>
+</html>
