@@ -305,16 +305,21 @@
   });
 }
 
-  async function loadData(){
-    try{
-      const data = await fetchFn('alerts');
-      const alerts = Array.isArray(data.alerts) ? data.alerts : [];
-      ALL_ALERTS = alerts;
-      renderQueue(alerts);
-      renderKpis(data.kpis || {});
-    }catch(e){ console.error(e); toast('⚠️ Could not load alerts/KPIs'); }
-    ; // do not await
+async function loadData(){
+  try{
+    const data = await fetchFn('alerts');
+    const alerts = Array.isArray(data.alerts) ? data.alerts : [];
+    ALL_ALERTS = alerts;
+    renderQueue(alerts);
+    renderKpis(data.kpis || {});
+  }catch(e){ 
+    console.error(e); 
+    toast('⚠️ Could not load alerts/KPIs'); 
   }
+  // 👇 call immediately
+  await loadRecentAudits();  
+}
+
 
   async function loadRecentAudits(){
   try{
