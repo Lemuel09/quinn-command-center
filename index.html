@@ -1,223 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Takumi — Command Center</title>
-<style>
-  :root {
-    --bg:#0B1020; --panel:rgba(255,255,255,.06); --panel2:rgba(255,255,255,.02);
-    --line:rgba(255,255,255,.12); --text:#e8f7ff; --cyan:#00F0FF; --green:#3BFF88; --purple:#8A7CFF;
-  }
-  html,body {height:100%;margin:0;background:radial-gradient(1200px 800px at 50% 0%, #121832 0%, #0B1020 60%, #05070e 100%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-  .wrap {max-width:1200px;margin:18px auto 60px;padding:0 16px}
-  .card {background:linear-gradient(180deg, var(--panel), var(--panel2));border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter: blur(10px)}
-  .card h2 {margin:0;padding:16px 18px 6px;font-size:1.1rem;letter-spacing:.3px}
-  .card .body {padding:14px 18px 18px}
+  <meta charset="UTF-8">
+  <title>Takumi — Command Center</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#0d1117; color:#fff; }
+    .hero { padding:2rem; text-align:center; background:linear-gradient(135deg,#111827,#1f2937); border-radius:12px; margin:1rem; }
+    .hero h1 { font-size:2.5rem; margin:0; }
+    .hero h2 { font-size:5rem; margin:0.5rem 0; }
+    .hero p { font-size:1rem; opacity:0.8; }
 
-  .titlebar {padding:10px 0 2px;text-align:center}
-  .titlebar h1 {margin:0;font-weight:800;letter-spacing:.2px;font-size:clamp(22px,3.2vw,36px)}
+    .kpis { display:flex; justify-content:space-around; margin:1rem; }
+    .kpi { flex:1; margin:0.5rem; padding:1rem; background:#1e293b; border-radius:8px; text-align:center; }
 
-  .hero {margin-top:10px;padding:18px}
-  .hero-grid {display:grid;grid-template-columns:minmax(320px,520px) 1fr;gap:18px;align-items:center}
-  @media(max-width:900px){ .hero-grid{grid-template-columns:1fr} }
+    .card { background:#1e293b; border-radius:8px; margin:1rem; padding:1rem; }
+    .card h2 { margin-top:0; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:0.5rem; text-align:left; border-bottom:1px solid #374151; }
+    .pill { padding:0.2rem 0.6rem; border-radius:12px; font-size:0.8rem; }
+    .pill.red { background:#dc2626; }
+    .pill.yellow { background:#f59e0b; }
+    .pill.green { background:#16a34a; }
 
-  .hero-copy h2 {margin:0 0 8px;font-weight:900;line-height:.95;
-    font-size:clamp(56px,9vw,120px);text-shadow:0 8px 30px rgba(0,0,0,.45), 0 0 24px rgba(0,240,255,.18)}
-  .hero-copy .sysline {font-size:1rem;color:#d8e7ff;opacity:.95;margin:0 0 6px}
-  .hero-copy .miniTag {font-style:italic;color:#9fb7ff;opacity:.95;margin:0}
-
-  .takumi-video {display:flex;justify-content:center;align-items:center;width:100%;max-width:520px;margin:auto}
-  .takumi-video video {width:100%;height:auto;border-radius:12px;filter:drop-shadow(0 0 25px rgba(0,229,255,0.3))}
-
-  .kpis {display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  @media(min-width:680px){.kpis{grid-template-columns:repeat(4,1fr)}}
-  .kpi {padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background: radial-gradient(160px 80px at 20% 0%, rgba(0,240,255,.12), rgba(255,255,255,0));box-shadow: inset 0 0 24px rgba(0,240,255,.06)}
-  .kpi .label{opacity:.8;font-size:.85rem}
-  .kpi .value{font-size:1.6rem;font-weight:700;margin-top:4px}
-  .kpi .sub{opacity:.75;font-size:.8rem}
-
-  .table-wrap{border:1px solid rgba(255,255,255,.12);border-radius:14px;overflow:auto}
-  table{width:100%;border-collapse:separate;border-spacing:0}
-  th,td{padding:10px 12px;text-align:left;font-size:.92rem}
-  thead th{position:sticky;top:0;background:rgba(11,16,32,.9);backdrop-filter: blur(6px);z-index:1}
-  tbody tr{border-bottom:1px solid rgba(255,255,255,.08)}
-  tbody tr:hover{background:rgba(255,255,255,.03)}
-
-  .pill{display:inline-flex;gap:6px;align-items:center;font-size:.75rem;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
-  .pill.red{background:rgba(255,59,59,.15);border-color:rgba(255,59,59,.35)}
-  .pill.yellow{background:rgba(255,190,70,.12);border-color:rgba(255,190,70,.35)}
-  .pill.green{background:rgba(59,255,136,.12);border-color:rgba(59,255,136,.35)}
-
-  .toast{position:fixed;right:18px;bottom:18px;background:rgba(20,28,48,.95);border:1px solid rgba(255,255,255,.15);color:#e8f7ff;padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(6px);transition:.25s}
-  .toast.show{opacity:1;transform:translateY(0)}
-</style>
+    .toast { position:fixed; bottom:20px; right:20px; background:#333; color:#fff; padding:10px; border-radius:6px; opacity:0; transition:opacity 0.3s; }
+    .toast.show { opacity:1; }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="titlebar">
+  <div class="hero">
     <h1>Takumi — Command Center</h1>
+    <h2>Takumi</h2>
+    <p>THE/STUDIO’s Auto Audit & Redflag System<br>
+    <i>The one AI agent to bind all risks and bring them to light…</i></p>
   </div>
 
-  <!-- HERO -->
-  <div class="card hero">
-    <div class="hero-grid">
-      <div class="hero-copy">
-        <h2>Takumi</h2>
-        <p class="sysline">THE/STUDIO’s Auto Audit &amp; Redflag System</p>
-        <p class="miniTag">The one AI agent to bind all risks and bring them to light...</p>
-      </div>
-      <div class="takumi-video">
-        <video autoplay muted loop playsinline>
-          <source src="Takumi V2.mp4" type="video/mp4">
-        </video>
-      </div>
-    </div>
+  <div class="kpis">
+    <div class="kpi"><div id="kpiHigh">–</div><small>High-Risk Open</small></div>
+    <div class="kpi"><div id="kpiMed">–</div><small>Medium Risk</small></div>
+    <div class="kpi"><div id="kpiRes7">–</div><small>Resolved (7d)</small></div>
+    <div class="kpi"><div id="kpiScore">–</div><small>Avg Audit Score (7d)</small></div>
   </div>
 
-  <!-- KPIs -->
-  <div class="card"><div class="body">
-    <div class="kpis" id="kpis">
-      <div class="kpi"><div class="label">High-Risk Open</div><div class="value" id="kpiHigh">–</div><div class="sub">Unresolved</div></div>
-      <div class="kpi"><div class="label">Medium Risk</div><div class="value" id="kpiMed">–</div><div class="sub">Unresolved</div></div>
-      <div class="kpi"><div class="label">Resolved (7d)</div><div class="value" id="kpiRes7">–</div><div class="sub">Last 7 days</div></div>
-      <div class="kpi"><div class="label">Avg Audit Score (7d)</div><div class="value" id="kpiScore">–</div><div class="sub">Across audits</div></div>
-    </div>
-  </div></div>
-
-  <!-- Risk + Live Audits -->
-  <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px">
-    <div class="card">
-      <h2>🧯 High-Risk Queue <span class="pill red" id="queueCount">0</span></h2>
-      <div class="body"><div class="table-wrap"><table>
-        <thead><tr>
-          <th>Ticket</th><th>Owner</th><th>Risk</th><th>Issue</th>
-          <th>Audit Time</th><th>Resolution Time</th><th>Status</th><th>Action</th>
-        </tr></thead>
-        <tbody id="queueBody"></tbody>
-      </table></div></div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:16px">
-      <div class="card">
-        <h2>🛰️ Live Audits (auto + manual)</h2>
-        <div class="body"><div class="table-wrap"><table>
-          <thead><tr>
-            <th>Audit Time</th><th>Ticket</th><th>Channel</th><th>Score</th>
-            <th>Risk</th><th>Source</th><th>Issue</th><th>Resolution Time</th>
-          </tr></thead>
-          <tbody id="recentBody"></tbody>
-        </table></div></div>
-      </div>
-      <div class="card">
-        <h2>🔎 Search</h2>
-        <div class="body"><input id="searchBox" placeholder="Search ticket, owner, issue…" style="width:100%"/></div>
-      </div>
-    </div>
+  <div class="card">
+    <h2>🔴 High-Risk Queue <span id="queueCount">0</span></h2>
+    <table>
+      <thead><tr>
+        <th>Ticket</th><th>Owner</th><th>Risk</th><th>Issue</th>
+        <th>Audit Time</th><th>Resolution Time</th><th>Status</th><th>Action</th>
+      </tr></thead>
+      <tbody id="queueBody"></tbody>
+    </table>
   </div>
-</div>
 
-<div class="toast" id="toast"></div>
+  <div class="card">
+    <h2>🛠 Live Audits (auto + manual)</h2>
+    <table>
+      <thead><tr>
+        <th>Audit Time</th><th>Ticket</th><th>Channel</th><th>Score</th>
+        <th>Risk</th><th>Source</th><th>Issue</th><th>Resolution Time</th>
+      </tr></thead>
+      <tbody id="recentBody"></tbody>
+    </table>
+  </div>
 
-<script>
-  /* ====== EDIT THESE THREE ====== */
-  const WEB_APP_URL = 'https://script.google.com/a/macros/thestudio.com/s/AKfycbyWe3NhOAzFtBOT7IRC2l_eUdoJSZ-Rdc2KPmD2Zd5gUTjTKX0CqZ5y--KoBt3DnKLH/exec';
-  const TOKEN       = 'QUINN_1f9a0d7a-6a3e-4a88-94c1-3b02a9e7c4d5';
-  /* ============================== */
+  <div class="card">
+    <h2>🔎 Search</h2>
+    <input type="text" id="searchBox" placeholder="Search ticket, owner, issue…" style="width:100%;padding:0.5rem;">
+  </div>
 
-  const qs = (s,root=document)=>root.querySelector(s);
-  const toast = (msg)=>{const t=qs('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);};
+  <div id="toast" class="toast"></div>
 
-  function fetchFn(fn, params={}) {
-    const u = new URL(WEB_APP_URL);
-    u.searchParams.set('fn', fn);
-    u.searchParams.set('token', TOKEN); // FIXED
-    Object.entries(params).forEach(([k,v])=>u.searchParams.set(k, v));
-    return fetch(u,{mode:'cors'}).then(r=>r.json());
-  }
+  <script>
+    /* ====== CONFIG ====== */
+    const WEB_APP_URL = 'https://script.google.com/a/macros/thestudio.com/s/AKfycbyWe3NhOAzFtBOT7IRC2l_eUdoJSZ-Rdc2KPmD2Zd5gUTjTKX0CqZ5y--KoBt3DnKLH/exec';
+    const TOKEN       = 'QUINN_1f9a0d7a-6a3e-4a88-94c1-3b02a9e7c4d5';
 
-  let ALL_ALERTS = [];
+    // Utilities
+    const qs = (s,root=document)=>root.querySelector(s);
+    const toast = (msg)=>{ const t=qs('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); };
 
-  function riskToLabel(risk,riskLevel){
-    if(riskLevel) return riskLevel;
-    const n=Number(risk); if(!isFinite(n)) return 'Low';
-    const pct=n<=1?(n*100):n;
-    if(pct>=70) return 'High'; if(pct>=40) return 'Medium'; return 'Low';
-  }
-
-  function renderKpis(k){
-    qs('#kpiHigh').textContent=k.highRisk??k.highOpen??'–';
-    qs('#kpiMed').textContent=k.medOpen??'–';
-    qs('#kpiRes7').textContent=k.resolved7d??'–';
-    qs('#kpiScore').textContent=k.avgScore7d??k.avgScore??'–';
-  }
-
-  function renderQueue(rows){
-    const body=qs('#queueBody'); body.innerHTML='';
-    qs('#queueCount').textContent=rows.length;
-    for(const r of rows){
-      const riskLabel=riskToLabel(r.risk,r.riskLevel);
-      const riskClass=riskLabel==='High'?'red':(riskLabel==='Medium'?'yellow':'green');
-      const status=r.status||'Open'; const ticketText=r.title||r.ticket||''; const link=r.link||'#';
-      const tr=document.createElement('tr');
-      tr.innerHTML=`
-        <td><a href="${link}" target="_blank">${ticketText}</a></td>
-        <td>${r.owner||''}</td>
-        <td><span class="pill ${riskClass}">${riskLabel}</span></td>
-        <td>${r.issues||''}</td>
-        <td>${r.auditTime||'-'}</td>
-        <td>${r.resolutionTime||'-'}</td>
-        <td>${status}</td>
-        <td><button class="btn" data-ticket="${ticketText}">Resolve</button></td>`;
-      body.appendChild(tr);
+    // Fetch wrapper (always sends token)
+    function fetchFn(fn, params={}) {
+      const u = new URL(WEB_APP_URL);
+      u.searchParams.set('fn', fn);
+      u.searchParams.set('token', TOKEN); // ✅ always include token
+      Object.entries(params).forEach(([k,v])=>u.searchParams.set(k, v));
+      return fetch(u, {mode:'cors'}).then(r=>r.json()).catch(e=>{console.error(e); return {};});
     }
-  }
 
-  async function loadData(){
-    try{
-      const data=await fetchFn('alerts');
-      const alerts=Array.isArray(data.alerts)?data.alerts:[];
-      ALL_ALERTS=alerts; renderQueue(alerts); renderKpis(data.kpis||{});
-    }catch(e){console.error(e);toast('⚠️ Could not load alerts');}
-    loadRecentAudits();
-  }
+    // Risk label
+    function riskToLabel(risk, riskLevel){
+      if (riskLevel) return riskLevel;
+      const n = Number(risk);
+      if (!isFinite(n)) return 'Low';
+      const pct = n <= 1 ? (n*100) : n;
+      if (pct >= 70) return 'High';
+      if (pct >= 40) return 'Medium';
+      return 'Low';
+    }
 
-  async function loadRecentAudits(){
-    try{
-      const d=await fetchFn('recent');
-      const rows=d?.rows||(Array.isArray(d)?d:[]);
-      const body=qs('#recentBody'); body.innerHTML='';
+    // Render KPIs
+    function renderKpis(k){
+      qs('#kpiHigh').textContent = k.highRisk ?? k.highOpen ?? '–';
+      qs('#kpiMed').textContent  = k.medOpen  ?? '–';
+      qs('#kpiRes7').textContent = k.resolved7d ?? '–';
+      qs('#kpiScore').textContent= k.avgScore7d ?? k.avgScore ?? '–';
+    }
+
+    // Render queue
+    function renderQueue(rows){
+      const body = qs('#queueBody'); 
+      body.innerHTML = '';
+      qs('#queueCount').textContent = rows.length;
+
+      for(const r of rows){
+        const riskLabel = riskToLabel(r.risk, r.riskLevel);
+        const riskClass = riskLabel==='High' ? 'red' : (riskLabel==='Medium' ? 'yellow' : 'green');
+        const status = r.status || 'Open';
+        const ticketText = r.title || r.ticket || '';
+        const link = r.link || '#';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><a href="${link}" target="_blank" rel="noopener">${ticketText}</a></td>
+          <td>${r.owner || ''}</td>
+          <td><span class="pill ${riskClass}">${riskLabel}</span></td>
+          <td title="${(r.issues||'')}">
+            ${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}
+          </td>
+          <td>${r.auditTime || r.time || '-'}</td>
+          <td>${r.resolutionTime || '-'}</td>
+          <td>${status}</td>
+          <td><button class="btn" onclick="resolveTicket('${ticketText}')">Resolve</button></td>`;
+        body.appendChild(tr);
+      }
+    }
+
+    // Render recent audits
+    function renderRecent(rows){
+      const body = qs('#recentBody'); 
+      body.innerHTML = '';
       rows.forEach(x=>{
-        const label=riskToLabel(x.risk,x.riskLevel);
-        const riskClass=label==='High'?'red':(label==='Medium'?'yellow':'green');
-        const tr=document.createElement('tr');
-        tr.innerHTML=`
-          <td>${x.auditTime||x.time||'-'}</td>
-          <td><a href="${x.link||'#'}" target="_blank">${x.title||x.ticket||''}</a></td>
+        const label = riskToLabel(x.risk, x.riskLevel);
+        const riskClass = (label==='High'?'red':(label==='Medium'?'yellow':'green'));
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${x.auditTime || x.time || '-'}</td>
+          <td><a href="${x.link||'#'}" target="_blank" rel="noopener">${x.title||x.ticket||''}</a></td>
           <td>${x.channel||''}</td>
-          <td>${x.score||'-'}</td>
+          <td>${x.score ?? '-'}</td>
           <td><span class="pill ${riskClass}">${label}</span></td>
           <td>${x.source||''}</td>
-          <td>${x.issues||''}</td>
-          <td>${x.resolutionTime||'-'}</td>`;
+          <td title="${(x.issues||'')}">
+            ${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}
+          </td>
+          <td>${x.resolutionTime || '-'}</td>`;
         body.appendChild(tr);
       });
-    }catch(e){console.error(e);}
-  }
+    }
 
-  qs('#searchBox').addEventListener('input', e=>{
-    const q=e.target.value.toLowerCase().trim();
-    if(!q) return renderQueue(ALL_ALERTS);
-    const out=ALL_ALERTS.filter(r=>
-      (r.title||r.ticket||'').toLowerCase().includes(q)||
-      (r.owner||'').toLowerCase().includes(q)||
-      (r.issues||'').toString().toLowerCase().includes(q)||
-      (r.status||'').toLowerCase().includes(q)
-    );
-    renderQueue(out);
-  });
+    // Load data
+    async function loadData(){
+      try{
+        const data = await fetchFn('alerts');
+        const alerts = Array.isArray(data.alerts) ? data.alerts : [];
+        renderQueue(alerts);
+        renderKpis(data.kpis || {});
+      }catch(e){ console.error(e); toast('⚠️ Could not load alerts/KPIs'); }
 
-  loadData();
-  setInterval(loadRecentAudits,10000);
-</script>
+      try{
+        const d = await fetchFn('recent');
+        const rows = d?.rows || (Array.isArray(d) ? d : []);
+        renderRecent(rows);
+      }catch(e){ console.error(e); }
+    }
+
+    // Resolve ticket
+    async function resolveTicket(ticket){
+      try{
+        const res = await fetch(WEB_APP_URL, {
+          method:'POST', mode:'cors',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({action:'resolve', ticket, by:'manager@company.com', token:TOKEN})
+        }).then(x=>x.json()).catch(()=>null);
+
+        if(res && res.ok){ toast('✅ Resolved'); loadData(); return; }
+        toast('⚠️ Could not resolve');
+      }catch(_){ toast('⚠️ Resolve failed'); }
+    }
+
+    // Search
+    qs('#searchBox').addEventListener('input', async (e)=>{
+      const q = e.target.value.toLowerCase().trim();
+      if(!q){ loadData(); return; }
+      const data = await fetchFn('alerts');
+      const out = (data.alerts||[]).filter(r=>
+        (r.title||r.ticket||'').toLowerCase().includes(q) ||
+        (r.owner||'').toLowerCase().includes(q) ||
+        (r.issues||'').toString().toLowerCase().includes(q) ||
+        (r.status||'').toLowerCase().includes(q)
+      );
+      renderQueue(out);
+    });
+
+    // Init
+    loadData();
+    setInterval(loadData, 15000);
+  </script>
 </body>
 </html>
