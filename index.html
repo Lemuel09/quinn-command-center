@@ -313,17 +313,16 @@
       renderQueue(alerts);
       renderKpis(data.kpis || {});
     }catch(e){ console.error(e); toast('⚠️ Could not load alerts/KPIs'); }
-    loadRecentAudits(); // do not await
+    ; // do not await
   }
 
   async function loadRecentAudits(){
   try{
     const d = await fetchFn('recent');
+    console.log('DEBUG recent response:', d);  // 👀 print raw response
 
-    // If backend returns { rows: [...] } use that, otherwise treat as array
     const rows = Array.isArray(d) ? d : (d?.rows || []);
 
-    // 🔽 Sort newest to oldest by time
     rows.sort((a,b)=>{
       const da = new Date(a.auditTime || a.time || 0);
       const db = new Date(b.auditTime || b.time || 0);
