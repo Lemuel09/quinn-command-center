@@ -274,15 +274,16 @@
     qs('#kpiScore').textContent= k.avgScore7d ?? k.avgScore ?? '–';
   }
 
-function renderQueue(rows){
+
+  function renderQueue(rows){
   const body = qs('#queueBody'); 
   body.innerHTML = '';
   qs('#queueCount').textContent = rows.length;
 
-  // 🔽 Sort newest to oldest
+  // 🔽 Sort newest to oldest by time
   rows.sort((a,b)=>{
-    const da = new Date(a.auditTime || a.time || 0);
-    const db = new Date(b.auditTime || b.time || 0);
+    const da = new Date(a.time || 0);
+    const db = new Date(b.time || 0);
     return db - da;
   });
 
@@ -292,26 +293,40 @@ function renderQueue(rows){
     const status = r.status || 'Open';
     const ticketText = r.title || r.ticket || '';
     const link = r.link || '#';
+
+    // ✅ values coming from backend
     const resolvedBy = r.resolvedBy || '';
     const resolutionNote = r.resolutionNote || '';
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><a href="${link}" target="_blank" rel="noopener">${ticketText}</a></td>
-      <td>${r.auditTime || r.time || '-'}</td>
+      <td>${r.time || '-'}</td>
       <td>${r.owner || ''}</td>
       <td><span class="pill ${riskClass}">${riskLabel}</span></td>
       <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
       <td>${status}</td>
-      <td>${resolvedBy}</td> <!-- ✅ Show resolver -->
-      <td title="${resolutionNote}">${resolutionNote.toString().slice(0,60)}${resolutionNote.length>60?'…':''}</td> <!-- ✅ Show resolution note -->
+      <td>${resolvedBy}</td>
+      <td title="${resolutionNote}">${resolutionNote.toString().slice(0,60)}${resolutionNote.length>60?'…':''}</td>
       <td>
-        <textarea class="resolutionNote" placeholder="Enter resolution note…" style="width:180px; height:40px; resize:vertical;"></textarea>
+        <textarea class="resolutionNote" placeholder="Enter resolution note…" 
+          style="width:180px; height:40px; resize:vertical;"></textarea>
         <button class="btn resolveBtn" data-ticket="${ticketText}">Resolve</button>
         <button class="btn" onclick="window.open('${link}','_blank')">Open</button>
       </td>`;
     body.appendChild(tr);
   }
+
+  // ✅ Hook up Resolve button with note capture
+  body.querySelectorAll('button.resolveBtn').forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{ 
+      const ticket = e.currentTarget.getAttribute('data-ticket');
+      const note = e.currentTarget.closest('td').querySelector('.resolutionNote')?.value || '';
+      await resolveTicket(ticket, note); 
+    });
+  });
+}
+
 
   // ✅ Hook up Resolve button
   body.querySelectorAll('button.resolveBtn').forEach(btn=>{
