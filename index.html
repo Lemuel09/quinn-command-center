@@ -327,18 +327,6 @@
   });
 }
 
-
-  // ✅ Hook up Resolve button
-  body.querySelectorAll('button.resolveBtn').forEach(btn=>{
-    btn.addEventListener('click', async (e)=>{ 
-      const ticket = e.currentTarget.getAttribute('data-ticket');
-      const note = e.currentTarget.closest('td').querySelector('.resolutionNote')?.value || '';
-      await resolveTicket(ticket, note); 
-    });
-  });
-}
-
-
 async function loadData(){
   try {
     const res = await fetch(`${WEB_APP_URL}?fn=alerts&token=${TOKEN}`);
