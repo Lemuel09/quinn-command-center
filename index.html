@@ -290,17 +290,19 @@
       <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
       <td>${status}</td>
       <td>
-        <button class="btn" data-ticket="${ticketText}">Resolve</button>
+        <textarea class="resolutionNote" placeholder="Enter resolution note…"></textarea>
+        <button class="btn resolveBtn" data-ticket="${ticketText}">Resolve</button>
         <button class="btn" onclick="window.open('${link}','_blank')">Open</button>
       </td>`;
     body.appendChild(tr);
   }
 
-  // keep resolve button working
-  body.querySelectorAll('button.btn').forEach(btn=>{
-    if(btn.textContent.trim()!=='Resolve') return;
+  // ✅ Hook up Resolve button with note capture
+  body.querySelectorAll('button.resolveBtn').forEach(btn=>{
     btn.addEventListener('click', async (e)=>{ 
-      await resolveTicket(e.currentTarget.getAttribute('data-ticket')); 
+      const ticket = e.currentTarget.getAttribute('data-ticket');
+      const note = e.currentTarget.closest('td').querySelector('.resolutionNote')?.value || '';
+      await resolveTicket(ticket, note); 
     });
   });
 }
@@ -375,26 +377,40 @@ async function loadData(){
   });
 
   // Resolve + Quick audit
-  async function resolveTicket(ticket){
-    try{
-      const res = await fetch(WEB_APP_URL, {
-        method:'POST', mode:'cors', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({action:'resolve', ticket, by:'manager@company.com', token:TOKEN})
-      }).then(x=>x.json()).catch(()=>null);
+  async function resolveTicket(ticket, note="") {
+  try {
+    const payload = {
+      action: 'resolve',
+      ticket,
+      note,
+      token: TOKEN
+    };
 
-      if(res && res.ok){ toast('✅ Resolved'); loadData(); return; }
+    const res = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(x => x.json()).catch(() => null);
 
-      // fallback via JSONP
-      const d = await fetchFn('resolve', {ticket, by:'manager@company.com', token:TOKEN});
-      if(d && d.ok){ toast('✅ Resolved'); loadData(); } else { toast('⚠️ Could not resolve'); }
-    }catch(_){ toast('⚠️ Resolve failed'); }
+    if (res && res.ok) {
+      toast('✅ Resolved');
+      loadData();
+      return;
+    }
+
+    const d = await fetchFn('resolve', payload);
+    if (d && d.ok) {
+      toast('✅ Resolved');
+      loadData();
+    } else {
+      toast('⚠️ Could not resolve');
+    }
+  } catch (err) {
+    toast('⚠️ Resolve failed');
   }
+}
 
-  const backdrop = qs('#auditBackdrop');
-  const inputs = {
-    ticket: qs('#qa_ticket'), channel: qs('#qa_channel'), owner: qs('#qa_owner'),
-    link: qs('#qa_link'), score: qs('#qa_score'), risk: qs('#qa_risk'), issues: qs('#qa_issues')
-  };
   function openAuditModal(prefill={}){
     inputs.ticket.value  = prefill.ticket || '';
     inputs.channel.value = prefill.channel || 'Ticket';
