@@ -135,21 +135,33 @@
   </div></div>
 
   <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px">
-    <div class="card">
-      <h2 style="display:flex;align-items:center;gap:8px">🧯 High-Risk Queue <span class="pill red" id="queueCount">0</span></h2>
-      <div class="body"><div class="table-wrap"><table>
-       <thead><tr>
-  <th style="min-width:140px">Ticket</th>
-  <th style="min-width:120px">Date</th>
-  <th style="min-width:140px">Owner</th>
-  <th style="min-width:110px">Risk</th>
-  <th>Issue</th>
-  <th style="min-width:120px">Status</th>
-  <th style="min-width:160px">Action</th>
-</tr></thead>
-        <tbody id="queueBody"></tbody>
-      </table></div></div>
+  <div class="card">
+    <h2 style="display:flex;align-items:center;gap:8px">
+      🧯 High-Risk Queue <span class="pill red" id="queueCount">0</span>
+    </h2>
+    <div class="body">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="min-width:140px">Ticket</th>
+              <th style="min-width:120px">Date</th>
+              <th style="min-width:140px">Owner</th>
+              <th style="min-width:110px">Risk</th>
+              <th>Issue</th>
+              <th style="min-width:120px">Status</th>
+              <th style="min-width:140px">Resolved By</th>      <!-- ✅ NEW -->
+              <th style="min-width:200px">Resolution Note</th>  <!-- ✅ NEW -->
+              <th style="min-width:160px">Action</th>
+            </tr>
+          </thead>
+          <tbody id="queueBody"></tbody>
+        </table>
+      </div>
     </div>
+  </div>
+</div>
+
 
     <div style="display:flex;flex-direction:column;gap:16px">
       <div class="card">
@@ -262,12 +274,12 @@
     qs('#kpiScore').textContent= k.avgScore7d ?? k.avgScore ?? '–';
   }
 
-  function renderQueue(rows){
+function renderQueue(rows){
   const body = qs('#queueBody'); 
   body.innerHTML = '';
   qs('#queueCount').textContent = rows.length;
 
-  // 🔽 Sort newest to oldest by auditTime (or fallback to time)
+  // 🔽 Sort newest to oldest
   rows.sort((a,b)=>{
     const da = new Date(a.auditTime || a.time || 0);
     const db = new Date(b.auditTime || b.time || 0);
@@ -280,6 +292,8 @@
     const status = r.status || 'Open';
     const ticketText = r.title || r.ticket || '';
     const link = r.link || '#';
+    const resolvedBy = r.resolvedBy || '';
+    const resolutionNote = r.resolutionNote || '';
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -289,6 +303,8 @@
       <td><span class="pill ${riskClass}">${riskLabel}</span></td>
       <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
       <td>${status}</td>
+      <td>${resolvedBy}</td> <!-- ✅ Show resolver -->
+      <td title="${resolutionNote}">${resolutionNote.toString().slice(0,60)}${resolutionNote.length>60?'…':''}</td> <!-- ✅ Show resolution note -->
       <td>
         <textarea class="resolutionNote" placeholder="Enter resolution note…" style="width:180px; height:40px; resize:vertical;"></textarea>
         <button class="btn resolveBtn" data-ticket="${ticketText}">Resolve</button>
@@ -297,7 +313,7 @@
     body.appendChild(tr);
   }
 
-  // ✅ Hook up Resolve button with note capture
+  // ✅ Hook up Resolve button
   body.querySelectorAll('button.resolveBtn').forEach(btn=>{
     btn.addEventListener('click', async (e)=>{ 
       const ticket = e.currentTarget.getAttribute('data-ticket');
@@ -306,6 +322,7 @@
     });
   });
 }
+
 
 async function loadData(){
   try {
