@@ -288,7 +288,7 @@
   });
 
   for(const r of rows){
-    const riskLabel = riskToLabel(r.risk, r.risklevel);
+   const riskLabel = riskToLabel(r.risk, r.riskLevel);
     const riskClass = riskLabel==='High' ? 'red' : (riskLabel==='Medium' ? 'yellow' : 'green');
     const status = r.status || 'Open';
     const ticketText = r.title || r.ticket || '';
@@ -337,8 +337,8 @@ async function loadData(){
       return;
     }
 
-    // ✅ Only show unresolved high-risk rows
-    const rows = data.alerts.filter(r =>
+    ALL_ALERTS = data.alerts;   // ✅ ensure global is updated
+    const rows = ALL_ALERTS.filter(r =>
       String(r.status || '').toLowerCase() !== 'resolved'
     );
 
@@ -347,8 +347,6 @@ async function loadData(){
     toast('⚠️ Load failed');
   }
 }
-
-
 
   async function loadRecentAudits(){
   try {
