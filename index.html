@@ -337,10 +337,14 @@ async function loadData(){
       return;
     }
 
-    ALL_ALERTS = data.alerts;   // ✅ ensure global is updated
-    const rows = ALL_ALERTS.filter(r =>
-      String(r.status || '').toLowerCase() !== 'resolved'
-    );
+    ALL_ALERTS = data.alerts;   // keep full set for search
+
+    // ✅ Only show unresolved HIGH-RISK rows
+    const rows = ALL_ALERTS.filter(r => {
+      const status = String(r.status || '').toLowerCase();
+      const risk = (r.riskLevel || r.risk || '').toString().toLowerCase();
+      return status !== 'resolved' && risk.includes('high');
+    });
 
     renderQueue(rows);
   } catch (err) {
