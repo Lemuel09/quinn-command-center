@@ -290,7 +290,7 @@
       <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
       <td>${status}</td>
       <td>
-        <textarea class="resolutionNote" placeholder="Enter resolution note…"></textarea>
+        <textarea class="resolutionNote" placeholder="Enter resolution note…" style="width:180px; height:40px; resize:vertical;"></textarea>
         <button class="btn resolveBtn" data-ticket="${ticketText}">Resolve</button>
         <button class="btn" onclick="window.open('${link}','_blank')">Open</button>
       </td>`;
@@ -308,19 +308,26 @@
 }
 
 async function loadData(){
-  try{
-    const data = await fetchFn('alerts');
-    const alerts = Array.isArray(data.alerts) ? data.alerts : [];
-    ALL_ALERTS = alerts;
-    renderQueue(alerts);
-    renderKpis(data.kpis || {});
-  }catch(e){ 
-    console.error(e); 
-    toast('⚠️ Could not load alerts/KPIs'); 
+  try {
+    const res = await fetch(`${WEB_APP_URL}?fn=alerts&token=${TOKEN}`);
+    const data = await res.json();
+
+    if (!data || !data.ok) {
+      toast('⚠️ Failed to load data');
+      return;
+    }
+
+    // ✅ Only show unresolved high-risk rows
+    const rows = data.alerts.filter(r =>
+      String(r.status || '').toLowerCase() !== 'resolved'
+    );
+
+    renderQueue(rows);
+  } catch (err) {
+    toast('⚠️ Load failed');
   }
-  // 👇 call immediately
-  await loadRecentAudits();  
 }
+
 
 
   async function loadRecentAudits(){
@@ -395,7 +402,7 @@ async function loadData(){
 
     if (res && res.ok) {
       toast('✅ Resolved');
-      loadData();
+      loadData(); // ✅ reload queue so case disappears
       return;
     }
 
