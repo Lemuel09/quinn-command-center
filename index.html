@@ -414,59 +414,53 @@ async function loadData(){
   // Resolve + Quick audit
   async function resolveTicket(ticket, note = "") {
   try {
-    // Find the table row for visual effect
-    const btn = document.querySelector(`button.resolveBtn[data-ticket="${ticket}"]`);
-    const tr = btn ? btn.closest("tr") : null;
-
     const payload = {
-      action: "resolve",
+      action: 'resolve',
       ticket,
       note,
       token: TOKEN
     };
 
-    // First try standard POST
+    // 🔹 Send to backend (POST)
     const res = await fetch(WEB_APP_URL, {
-      method: "POST",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     }).then(x => x.json()).catch(() => null);
 
-    const ok = res && res.ok;
+    // 🔹 Only reload after confirmed write
+    if (res && res.ok) {
+      toast('✅ Resolved');
 
-    if (ok) {
-      toast(`✅ Resolved by ${res.resolvedBy || "You"}`);
+      // ✅ Remove from current queue immediately (no flicker)
+      const body = qs('#queueBody');
+      const row = [...body.querySelectorAll('button.resolveBtn')]
+        .find(btn => btn.dataset.ticket === ticket)?.closest('tr');
+      if (row) row.remove();
 
-      // 🔽 Apply fade-out before removing
-      if (tr) {
-        tr.classList.add("fade-out");
-        setTimeout(() => tr.remove(), 500);
-      }
-
-      // Reload queue so it stays fresh
-      setTimeout(loadData, 1200);
+      // ✅ Then re-fetch updated list from backend after 1.5s
+      setTimeout(loadData, 1500);
       return;
     }
 
-    // JSONP fallback
-    const d = await fetchFn("resolve", payload);
+    // 🔹 Try JSONP fallback if POST failed
+    const d = await fetchFn('resolve', payload);
     if (d && d.ok) {
-      toast(`✅ Resolved by ${d.resolvedBy || "You"}`);
-      if (tr) {
-        tr.classList.add("fade-out");
-        setTimeout(() => tr.remove(), 500);
-      }
-      setTimeout(loadData, 700);
+      toast('✅ Resolved');
+      const body = qs('#queueBody');
+      const row = [...body.querySelectorAll('button.resolveBtn')]
+        .find(btn => btn.dataset.ticket === ticket)?.closest('tr');
+      if (row) row.remove();
+      setTimeout(loadData, 1500);
     } else {
-      toast("⚠️ Could not resolve");
+      toast('⚠️ Could not resolve');
     }
   } catch (err) {
-    toast("⚠️ Resolve failed");
-    console.error("Resolve error:", err);
+    console.error(err);
+    toast('⚠️ Resolve failed');
   }
 }
-
 
 
   function openAuditModal(prefill={}){
