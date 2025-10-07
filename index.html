@@ -1,3 +1,7 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -218,348 +222,205 @@
 </div>
 
 <div class="toast" id="toast"></div>
-
 <script>
-  /* ====== EDIT THESE THREE ====== */
-  const WEB_APP_URL = 'https://script.google.com/a/macros/thestudio.com/s/AKfycbyig4x4YZQZfEsW8Xj7JTrmP1IcqZb6D-Hyjw8f4oxQSXpHS_dOlIvCQ66YzYWQ7m0t/exec';
-  const TOKEN       = 'QUINN_PORTAL_0c7a5f8f-1e9a-4b34-9b7d-3e6a9c21f4d8';
-  const INSIGHTS_URL= 'https://lookerstudio.google.com/reporting/YOUR_REPORT_ID';
-  /* ============================== */
+/* =========================================
+   TAKUMI — COMMAND CENTER FRONTEND
+   Fixed + Fully Functional Version
+   ========================================= */
 
-  // Eye parallax
-  (function(){
-    const iris = document.querySelector('.iris');
-    const rectEl = document.querySelector('.quinn-wrap');
-    rectEl.addEventListener('mousemove', (e)=>{
-      const r = rectEl.getBoundingClientRect();
-      const x = (e.clientX - (r.left + r.width/2)) / (r.width/2);
-      const y = (e.clientY - (r.top + r.height/2)) / (r.height/2);
-      iris.style.transform = `translate(${x*4}px, ${y*3}px) scale(1.02)`;
-    });
-    rectEl.addEventListener('mouseleave', ()=>{ iris.style.transform = 'translate(0,0) scale(1)'; });
-  })();
+/* ====== CONFIG ====== */
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwk1LTyIoLsk_MvdXQHr57LglkuyZXbFOZ2J7H44KXvqmjiKkrEfJuNlGklx-hOTDPj/exec";
+const TOKEN       = "QUINN_PORTAL_0c7a5f8f-1e9a-4b34-9b7d-3e6a9c21f4d8";
+const INSIGHTS_URL= "https://lookerstudio.google.com/reporting/YOUR_REPORT_ID";
 
-  // Utilities
-  const qs = (s,root=document)=>root.querySelector(s);
-  const toast = (msg)=>{ const t=qs('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); };
+let ALL_ALERTS = [];
 
-  // Generic fetch with JSONP fallback
-  function fetchFn(fn, params={}){
-    const u = new URL(WEB_APP_URL);
-    u.searchParams.set('fn', fn);
-    Object.entries(params).forEach(([k,v])=>u.searchParams.set(k, v));
-    return fetch(u, {mode:'cors'})
-      .then(r=>r.json())
-      .catch(()=> new Promise((resolve,reject)=>{
-        const cb = 'cb_'+Math.random().toString(36).slice(2);
-        window[cb] = (data)=>{ resolve(data); delete window[cb]; s.remove(); };
-        const s = document.createElement('script');
-        s.src = u.toString() + '&callback=' + cb;
-        s.onerror = ()=>{ reject(new Error('jsonp failed')); delete window[cb]; s.remove(); };
-        document.body.appendChild(s);
-      }));
+/* ====== FETCH WRAPPER ====== */
+async function fetchFn(fn, params = {}) {
+  const url = new URL(WEB_APP_URL);
+  url.searchParams.set("fn", fn);
+  url.searchParams.set("token", TOKEN);
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+
+  try {
+    const res = await fetch(url.toString(), { mode: "cors" });
+    return await res.json();
+  } catch (err) {
+    console.error("❌ fetchFn error:", err);
+    return { ok: false, error: String(err) };
   }
+}
 
-  // Renderers
-  let ALL_ALERTS = [];
-  function riskToLabel(risk, riskLevel){
-    if (riskLevel) return riskLevel;
-    const n = Number(risk);
-    if (!isFinite(n)) return 'Low';
-    // Accept 0..1 or 0..100
-    const pct = n <= 1 ? (n*100) : n;
-    if (pct >= 70) return 'High';
-    if (pct >= 40) return 'Medium';
-    return 'Low';
+/* ====== RESOLVER IDENTITY ====== */
+function getResolverIdentity() {
+  let resolver = localStorage.getItem("takumi_resolver");
+  if (!resolver) {
+    resolver = prompt("Please enter your name or email (saved for future use):");
+    if (!resolver) {
+      alert("You must enter your name to continue.");
+      throw new Error("Resolver identity missing");
+    }
+    localStorage.setItem("takumi_resolver", resolver.trim());
   }
+  return resolver.trim();
+}
 
-  function renderKpis(k){
-    qs('#kpiHigh').textContent = k.highRisk ?? k.highOpen ?? '–';
-    qs('#kpiMed').textContent  = k.medOpen  ?? '–';
-    qs('#kpiRes7').textContent = k.resolved7d ?? '–';
-    qs('#kpiScore').textContent= k.avgScore7d ?? k.avgScore ?? '–';
-  }
-
-
-  function renderQueue(rows){
-  const body = qs('#queueBody'); 
-  body.innerHTML = '';
-  qs('#queueCount').textContent = rows.length;
-
-  // 🔽 Sort newest to oldest by time
-  rows.sort((a,b)=>{
-    const da = new Date(a.time || 0);
-    const db = new Date(b.time || 0);
-    return db - da;
+/* ====== EYE PARALLAX ANIMATION ====== */
+(function(){
+  const iris = document.querySelector(".iris");
+  const rectEl = document.querySelector(".quinn-wrap");
+  rectEl.addEventListener("mousemove", (e)=>{
+    const r = rectEl.getBoundingClientRect();
+    const x = (e.clientX - (r.left + r.width/2)) / (r.width/2);
+    const y = (e.clientY - (r.top + r.height/2)) / (r.height/2);
+    iris.style.transform = `translate(${x*4}px, ${y*3}px) scale(1.02)`;
   });
+  rectEl.addEventListener("mouseleave", ()=>{ iris.style.transform = "translate(0,0) scale(1)"; });
+})();
+
+/* ====== BASIC UTILITIES ====== */
+const qs = (s,root=document)=>root.querySelector(s);
+const toast = (msg)=>{
+  const t = qs("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2200);
+};
+
+/* ====== RISK CONVERSION ====== */
+function riskToLabel(risk, riskLevel){
+  if (riskLevel) return riskLevel;
+  const n = Number(risk);
+  if (!isFinite(n)) return "Low";
+  const pct = n <= 1 ? (n*100) : n;
+  if (pct >= 70) return "High";
+  if (pct >= 40) return "Medium";
+  return "Low";
+}
+</script>
+<script>
+/* ====== KPI RENDERER ====== */
+function renderKpis(k){
+  qs("#kpiHigh").textContent = k.highRisk ?? k.highOpen ?? "–";
+  qs("#kpiMed").textContent  = k.medOpen  ?? "–";
+  qs("#kpiRes7").textContent = k.resolved7d ?? "–";
+  qs("#kpiScore").textContent= k.avgScore7d ?? k.avgScore ?? "–";
+}
+
+/* ====== HIGH-RISK QUEUE RENDERER ====== */
+function renderQueue(rows){
+  const body = qs("#queueBody");
+  if(!body){ console.error("❌ #queueBody not found"); return; }
+  body.innerHTML = "";
+  qs("#queueCount").textContent = rows.length;
+
+  if(!rows.length){
+    body.innerHTML = `<tr><td colspan="9" style="text-align:center;opacity:.6;">No high-risk audits found</td></tr>`;
+    return;
+  }
+
+  rows.sort((a,b)=>new Date(b.time||0)-new Date(a.time||0));
 
   for(const r of rows){
-   const riskLabel = riskToLabel(r.risk, r.riskLevel);
-    const riskClass = riskLabel==='High' ? 'red' : (riskLabel==='Medium' ? 'yellow' : 'green');
-    const status = r.status || 'Open';
-    const ticketText = r.title || r.ticket || '';
-    const link = r.link || '#';
-
-    // ✅ values coming from backend
-    const resolvedBy = r.resolvedBy || '';
-    const resolutionNote = r.resolutionNote || '';
-
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><a href="${link}" target="_blank" rel="noopener">${ticketText}</a></td>
-      <td>${r.time || '-'}</td>
-      <td>${r.owner || ''}</td>
+    const riskLabel = riskToLabel(r.risk,r.riskLevel);
+    const riskClass = riskLabel==="High"?"red":riskLabel==="Medium"?"yellow":"green";
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td><a href="${r.link||"#"}" target="_blank">${r.title||""}</a></td>
+      <td>${r.time||"-"}</td>
+      <td>${r.owner||""}</td>
       <td><span class="pill ${riskClass}">${riskLabel}</span></td>
-      <td title="${(r.issues||'')}">${(r.issues||'').toString().slice(0,80)}${(r.issues||'').toString().length>80?'…':''}</td>
-      <td>${status}</td>
-      <td>${resolvedBy}</td>
-      <td title="${resolutionNote}">${resolutionNote.toString().slice(0,60)}${resolutionNote.length>60?'…':''}</td>
+      <td title="${r.issues||""}">${(r.issues||"").toString().slice(0,80)}${(r.issues||"").length>80?"…":""}</td>
+      <td>${r.status||"Open"}</td>
+      <td>${r.resolvedBy||""}</td>
+      <td title="${r.resolutionNote||""}">${(r.resolutionNote||"").toString().slice(0,60)}${(r.resolutionNote||"").length>60?"…":""}</td>
       <td>
-        <textarea class="resolutionNote" placeholder="Enter resolution note…" 
-          style="width:180px; height:40px; resize:vertical;"></textarea>
-        <button class="btn resolveBtn" data-ticket="${ticketText}">Resolve</button>
-        <button class="btn" onclick="window.open('${link}','_blank')">Open</button>
+        <textarea class="resolutionNote" placeholder="Enter resolution note…" style="width:180px;height:40px;resize:vertical;"></textarea>
+        <button class="btn resolveBtn" data-ticket="${r.title}">Resolve</button>
+        <button class="btn" onclick="window.open('${r.link||"#"}','_blank')">Open</button>
       </td>`;
     body.appendChild(tr);
   }
 
-  // ✅ Hook up Resolve button with note capture
-  body.querySelectorAll('button.resolveBtn').forEach(btn=>{
-    btn.addEventListener('click', async (e)=>{ 
-      const ticket = e.currentTarget.getAttribute('data-ticket');
-      const note = e.currentTarget.closest('td').querySelector('.resolutionNote')?.value || '';
-      await resolveTicket(ticket, note); 
+  body.querySelectorAll("button.resolveBtn").forEach(btn=>{
+    btn.addEventListener("click",async e=>{
+      const ticket=e.currentTarget.dataset.ticket;
+      const note=e.currentTarget.closest("td").querySelector(".resolutionNote")?.value||"";
+      await resolveTicket(ticket,note);
     });
   });
 }
 
+/* ====== LOAD DATA (HIGH-RISK) ====== */
 async function loadData(){
-  try {
-    const res = await fetch(`${WEB_APP_URL}?fn=alerts&token=${TOKEN}`);
-    const data = await res.json();
-
-    if (!data || !data.ok) {
-      toast('⚠️ Failed to load data');
-      return;
-    }
-
-    ALL_ALERTS = data.alerts;   // keep full set for search
-
-    // ✅ Only show unresolved HIGH-RISK rows
-    const rows = ALL_ALERTS.filter(r => {
-      const status = String(r.status || '').toLowerCase();
-      const risk = (r.riskLevel || r.risk || '').toString().toLowerCase();
-      return status !== 'resolved' && risk.includes('high');
-    });
-
+  try{
+    console.log("⏳ Loading high-risk queue…");
+    const res=await fetchFn("alerts");
+    if(!res.ok){ toast("⚠️ Failed to load alerts: "+(res.error||"Unknown")); return; }
+    ALL_ALERTS=res.alerts||[];
+    const rows=ALL_ALERTS.filter(r=>String(r.status||"").toLowerCase()!=="resolved"&&String(r.riskLevel||"").toLowerCase()==="high");
     renderQueue(rows);
-  } catch (err) {
-    toast('⚠️ Load failed');
-  }
+  }catch(err){console.error("❌ loadData error:",err);toast("⚠️ Could not load alerts");}
 }
-
-  async function loadRecentAudits(){
-  try {
-    const d = await fetchFn('recent');
-    console.log("DEBUG raw recent response:", d);
-
-    // ✅ handle different possible response shapes
-    const rows = d?.rows || d?.recent || (Array.isArray(d) ? d : []);
-    console.log("DEBUG parsed rows:", rows);
-
-    // 🔽 Sort newest to oldest by auditTime or time
-    rows.sort((a,b)=>{
-      const da = new Date(a.auditTime || a.time || 0);
-      const db = new Date(b.auditTime || b.time || 0);
-      return db - da;
-    });
-
-    const body = qs('#recentBody'); 
-    body.innerHTML = '';
+</script>
+<script>
+/* ====== LIVE AUDITS ====== */
+async function loadRecentAudits(){
+  try{
+    const d=await fetchFn("recent");
+    const rows=d?.rows||d?.recent||(Array.isArray(d)?d:[]);
+    rows.sort((a,b)=>new Date(b.auditTime||b.time||0)-new Date(a.auditTime||a.time||0));
+    const body=qs("#recentBody");
+    body.innerHTML="";
     rows.forEach(x=>{
-      const label = riskToLabel(x.risk, x.riskLevel);  // ✅ use riskLevel
-      const riskClass = (label==='High'?'red':(label==='Medium'?'yellow':'green'));
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${x.time||x.auditTime||''}</td>
-        <td><a href="${x.link||'#'}" target="_blank" rel="noopener">${x.title||x.ticket||''}</a></td>
-        <td>${x.channel||''}</td>
-        <td>${(x.score===undefined||x.score==='')?'-':x.score}</td>
+      const label=riskToLabel(x.risk,x.riskLevel);
+      const riskClass=label==="High"?"red":label==="Medium"?"yellow":"green";
+      const tr=document.createElement("tr");
+      tr.innerHTML=`
+        <td>${x.time||x.auditTime||""}</td>
+        <td><a href="${x.link||"#"}" target="_blank">${x.title||x.ticket||""}</a></td>
+        <td>${x.channel||""}</td>
+        <td>${x.score??"-"}</td>
         <td><span class="pill ${riskClass}">${label}</span></td>
-        <td>${x.source||''}</td>
-        <td title="${(x.issues||'')}">${(x.issues||'').toString().slice(0,80)}${(x.issues||'').toString().length>80?'…':''}</td>`;
+        <td>${x.source||""}</td>
+        <td title="${x.issues||""}">${(x.issues||"").toString().slice(0,80)}${(x.issues||"").length>80?"…":""}</td>`;
       body.appendChild(tr);
     });
-
-  } catch(e) { 
-    console.error("ERROR in loadRecentAudits:", e); 
-    toast('⚠️ Could not load recent audits');
-  }
+  }catch(e){console.error("ERROR in loadRecentAudits:",e);toast("⚠️ Could not load recent audits");}
 }
 
+/* ====== SEARCH ====== */
+qs("#searchBox").addEventListener("input",e=>{
+  const q=e.target.value.toLowerCase().trim();
+  if(!q)return renderQueue(ALL_ALERTS);
+  const out=ALL_ALERTS.filter(r=>
+    (r.title||r.ticket||"").toLowerCase().includes(q)||
+    (r.owner||"").toLowerCase().includes(q)||
+    (r.issues||"").toString().toLowerCase().includes(q)||
+    (r.status||"").toLowerCase().includes(q)
+  );
+  renderQueue(out);
+});
 
-  // Quick search
-  qs('#searchBox').addEventListener('input', (e)=>{
-    const q = e.target.value.toLowerCase().trim();
-    if(!q) return renderQueue(ALL_ALERTS);
-    const out = ALL_ALERTS.filter(r=>
-      (r.title||r.ticket||'').toLowerCase().includes(q) ||
-      (r.owner||'').toLowerCase().includes(q) ||
-      (r.issues||'').toString().toLowerCase().includes(q) ||
-      (r.status||'').toLowerCase().includes(q)
-    );
-    renderQueue(out);
-  });
-
-  // Resolve + Quick audit
-  async function resolveTicket(ticket, note = "") {
-  try {
-    const payload = {
-      action: 'resolve',
-      ticket,
-      note,
-      token: TOKEN
-    };
-
-    // 🔹 Send to backend (POST)
-    const res = await fetch(WEB_APP_URL, {
-      method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    }).then(x => x.json()).catch(() => null);
-
-    // 🔹 Only reload after confirmed write
-    if (res && res.ok) {
-      toast('✅ Resolved');
-
-      // ✅ Remove from current queue immediately (no flicker)
-      const body = qs('#queueBody');
-      const row = [...body.querySelectorAll('button.resolveBtn')]
-        .find(btn => btn.dataset.ticket === ticket)?.closest('tr');
-      if (row) row.remove();
-
-      // ✅ Then re-fetch updated list from backend after 1.5s
-      setTimeout(loadData, 1500);
-      return;
-    }
-
-    // 🔹 Try JSONP fallback if POST failed
-    const d = await fetchFn('resolve', payload);
-    if (d && d.ok) {
-      toast('✅ Resolved');
-      const body = qs('#queueBody');
-      const row = [...body.querySelectorAll('button.resolveBtn')]
-        .find(btn => btn.dataset.ticket === ticket)?.closest('tr');
-      if (row) row.remove();
-      setTimeout(loadData, 1500);
-    } else {
-      toast('⚠️ Could not resolve');
-    }
-  } catch (err) {
-    console.error(err);
-    toast('⚠️ Resolve failed');
-  }
+/* ====== RESOLVE BUTTON ====== */
+async function resolveTicket(ticket,note=""){
+  try{
+    const resolver=getResolverIdentity();
+    if(!note)note=prompt("Add resolution note:")||"";
+    const payload={action:"resolve",ticket,note,by:resolver,token:TOKEN};
+    const res=await fetch(WEB_APP_URL,{
+      method:"POST",
+      mode:"cors",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    }).then(r=>r.json());
+    if(res.ok){
+      toast(`✅ Ticket resolved by ${resolver}`);
+      const row=[...qs("#queueBody").querySelectorAll("button.resolveBtn")]
+        .find(btn=>btn.dataset.ticket===ticket)?.closest("tr");
+      if(row){row.classList.add("fade-out");setTimeout(()=>row.remove(),400);}
+      setTimeout(loadData,1000);
+    }else{toast("⚠️ Resolve failed: "+(res.error||"Unknown"));}
+  }catch(err){console.error("resolveTicket error:",err);toast("❌ Could not resolve ticket");}
 }
-
-
-  function openAuditModal(prefill={}){
-    inputs.ticket.value  = prefill.ticket || '';
-    inputs.channel.value = prefill.channel || 'Ticket';
-    inputs.owner.value   = prefill.owner || '';
-    inputs.link.value    = prefill.link || '';
-    inputs.score.value   = prefill.score || '';
-    inputs.risk.value    = prefill.risk || prefill.risklevel || 'Low';
-    inputs.issues.value  = prefill.issues || '';
-    backdrop.classList.add('show');
-  }
-  function closeAuditModal(){ backdrop.classList.remove('show'); }
-  document.getElementById('btnCloseModal').onclick = closeAuditModal;
-
-  async function saveAudit(){
-    const payload = {
-      action:'submitAudit', token: TOKEN,
-      ticket: inputs.ticket.value.trim(),
-      channel: inputs.channel.value.trim(),
-      owner: inputs.owner.value.trim(),
-      link: inputs.link.value.trim(),
-      score: inputs.score.value.trim(),
-      risklevel: inputs.risk.value.trim(),
-      issues: inputs.issues.value.trim()
-    };
-    if(!payload.ticket){ toast('Ticket/Call/Chat ID is required'); return; }
-
-    try{
-      const r = await fetch(WEB_APP_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }).then(x=>x.json()).catch(()=>null);
-      if(r && r.ok){ toast('✅ Audit saved'); closeAuditModal(); loadData(); return; }
-      const d = await fetchFn('submitAudit', payload);
-      if(d && d.ok){ toast('✅ Audit saved'); closeAuditModal(); loadData(); } else { toast('⚠️ Could not save audit'); }
-    }catch(e){ toast('⚠️ Save failed'); }
-  }
-
-  async function randomFill(){
-    try{
-      const data = await fetchFn('random');
-      if(data && data.ticket){ openAuditModal(data); toast('🎲 Random ticket loaded'); }
-      else{ openAuditModal(); toast('No candidates found — enter an ID'); }
-    }catch(e){ openAuditModal(); toast('No candidates found — enter an ID'); }
-  }
-
-// === BUTTON SAFEGUARDS ===
-
-// Quick Audit modal
-const btnCloseModal = document.getElementById('btnCloseModal');
-if (btnCloseModal) btnCloseModal.onclick = closeAuditModal;
-
-const btnOpenQuickAudit = document.getElementById('btnOpenQuickAudit');
-if (btnOpenQuickAudit) btnOpenQuickAudit.onclick = () => openAuditModal();
-
-const btnRandomAudit = document.getElementById('btnRandomAudit');
-if (btnRandomAudit) btnRandomAudit.onclick = () => randomFill();
-
-const btnSaveAudit = document.getElementById('btnSaveAudit');
-if (btnSaveAudit) btnSaveAudit.onclick = saveAudit;
-
-const btnRandomFill = document.getElementById('btnRandomFill');
-if (btnRandomFill) btnRandomFill.onclick = randomFill;
-
-const btnInsights = document.getElementById('btnInsights');
-if (btnInsights) btnInsights.onclick = () => window.open(INSIGHTS_URL, '_blank');
-
-const btnRefresh = document.getElementById('btnRefresh');
-if (btnRefresh) btnRefresh.onclick = loadData;
-
-// === DEMO BUTTONS (optional) ===
-const btnTicketDemo = document.getElementById('btnTicketDemo');
-if (btnTicketDemo) {
-  btnTicketDemo.onclick = async () => {
-    qs('#demoStatus').textContent = "⏳ Running Ticket Demo...";
-    try {
-      const res = await fetchFn('runTicketDemo');
-      qs('#demoStatus').textContent = res || "✅ Ticket Demo done";
-      loadData();
-    } catch (e) {
-      qs('#demoStatus').textContent = "❌ Ticket Demo failed";
-    }
-  };
-}
-
-const btnCallDemo = document.getElementById('btnCallDemo');
-if (btnCallDemo) {
-  btnCallDemo.onclick = async () => {
-    qs('#demoStatus').textContent = "⏳ Running Call Demo...";
-    try {
-      const res = await fetchFn('runCallDemo');
-      qs('#demoStatus').textContent = res || "✅ Call Demo done";
-      loadData();
-    } catch (e) {
-      qs('#demoStatus').textContent = "❌ Call Demo failed";
-    }
-  };
-}
-
-  loadData();
-  setInterval(loadRecentAudits, 10000);
 </script>
-</body>
-</html>
