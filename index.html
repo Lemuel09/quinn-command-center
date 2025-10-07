@@ -400,31 +400,61 @@ qs("#searchBox").addEventListener("input",e=>{
   renderQueue(out);
 });
 
-/* ====== RESOLVE BUTTON ====== */
-async function resolveTicket(ticket,note=""){
-  try{
-    const resolver=getResolverIdentity();
-    if(!note)note=prompt("Add resolution note:")||"";
-    const payload={action:"resolve",ticket,note,by:resolver,token:TOKEN};
-    const res=await fetch(WEB_APP_URL,{
-      method:"POST",
-      mode:"cors",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(payload)
-    }).then(r=>r.json());
-    if(res.ok){
-      toast(`✅ Ticket resolved by ${resolver}`);
-      const row=[...qs("#queueBody").querySelectorAll("button.resolveBtn")]
-        .find(btn=>btn.dataset.ticket===ticket)?.closest("tr");
-      if(row){row.classList.add("fade-out");setTimeout(()=>row.remove(),400);}
-      setTimeout(loadData,1000);
-    }else{toast("⚠️ Resolve failed: "+(res.error||"Unknown"));}
-  }catch(err){console.error("resolveTicket error:",err);toast("❌ Could not resolve ticket");}
-}
+<!-- ====== RESOLVE BUTTON SECTION ====== -->
+<script>
+  // ... your earlier functions like fetchFn(), toast(), etc.
+
+  /* ====== HELPER: RESOLVER IDENTITY ====== */
+  function getResolverIdentity() {
+    const key = "quinn_resolver";
+    let name = localStorage.getItem(key);
+    if (!name) {
+      name = prompt("Enter your name (for audit resolution):")?.trim();
+      if (!name) throw new Error("Resolver identity missing");
+      localStorage.setItem(key, name);
+    }
+    return name;
+  }
+
+  /* ====== RESOLVE BUTTON ====== */
+  async function resolveTicket(ticket, note = "") {
+    try {
+      const resolver = getResolverIdentity();
+      if (!note) note = prompt("Add resolution note:") || "";
+
+      // ✅ Switch POST → GET to avoid CORS issues
+      const params = new URLSearchParams({
+        fn: "resolve",
+        ticket,
+        note,
+        by: resolver,
+        token: TOKEN
+      });
+      const res = await fetch(`${WEB_APP_URL}?${params.toString()}`)
+        .then(r => r.json());
+
+      if (res.ok) {
+        toast(`✅ Ticket resolved by ${resolver}`);
+        const row = [...qs("#queueBody").querySelectorAll("button.resolveBtn")]
+          .find(btn => btn.dataset.ticket === ticket)?.closest("tr");
+        if (row) {
+          row.classList.add("fade-out");
+          setTimeout(() => row.remove(), 400);
+        }
+        setTimeout(loadData, 1000);
+      } else {
+        toast("⚠️ Resolve failed: " + (res.error || "Unknown"));
+      }
+    } catch (err) {
+      console.error("resolveTicket error:", err);
+      toast("❌ Could not resolve ticket");
+    }
+  }
+
   /* ====== INITIALIZE ON LOAD ====== */
-window.addEventListener("DOMContentLoaded", async () => {
-  console.log("🚀 Takumi Command Center initializing...");
-  await loadData();          // loads high-risk queue
-  await loadRecentAudits();  // loads live audits
-});
+  window.addEventListener("DOMContentLoaded", async () => {
+    console.log("🚀 Takumi Command Center initializing...");
+    await loadData();
+    await loadRecentAudits();
+  });
 </script>
