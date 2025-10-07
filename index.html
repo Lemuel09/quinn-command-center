@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -226,7 +225,7 @@
    ========================================= */
 
 /* ====== CONFIG ====== */
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyMpo3PyJaA0ikERLIWVLEHiQggopVzA1ir8aRju6Qc5oFHf7hvP0C5enpsZyto5yYa/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx5qCuX1wBrWVYhmRABe6lQjV_MQ4eMH7OzvVPoGHHypKRG0-sj9Y1d2fBmQ3JJ3nWR/exec";
 const TOKEN       = "QUINN_PORTAL_0c7a5f8f-1e9a-4b34-9b7d-3e6a9c21f4d8";
 const INSIGHTS_URL= "https://lookerstudio.google.com/reporting/YOUR_REPORT_ID";
 
@@ -366,6 +365,7 @@ async function loadRecentAudits(){
   try{
     const d=await fetchFn("recent");
     const rows=d?.rows||d?.recent||(Array.isArray(d)?d:[]);
+    console.log("✅ Recent audits fetched:", rows.length, rows);
     rows.sort((a,b)=>new Date(b.auditTime||b.time||0)-new Date(a.auditTime||a.time||0));
     const body=qs("#recentBody");
     body.innerHTML="";
