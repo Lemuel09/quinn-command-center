@@ -364,6 +364,7 @@ async function loadData(){
 async function loadRecentAudits(){
   try{
     const d=await fetchFn("recent");
+    console.log("🔍 recent data:", d);
     const rows=d?.rows||d?.recent||(Array.isArray(d)?d:[]);
     console.log("✅ Recent audits fetched:", rows.length, rows);
     rows.sort((a,b)=>new Date(b.auditTime||b.time||0)-new Date(a.auditTime||a.time||0));
@@ -420,4 +421,10 @@ async function resolveTicket(ticket,note=""){
     }else{toast("⚠️ Resolve failed: "+(res.error||"Unknown"));}
   }catch(err){console.error("resolveTicket error:",err);toast("❌ Could not resolve ticket");}
 }
+  /* ====== INITIALIZE ON LOAD ====== */
+window.addEventListener("DOMContentLoaded", async () => {
+  console.log("🚀 Takumi Command Center initializing...");
+  await loadData();          // loads high-risk queue
+  await loadRecentAudits();  // loads live audits
+});
 </script>
