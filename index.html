@@ -418,39 +418,31 @@ qs("#searchBox").addEventListener("input",e=>{
 
   /* ====== RESOLVE BUTTON ====== */
   async function resolveTicket(ticket, note = "") {
-    try {
-      const resolver = getResolverIdentity();
-      if (!note) note = prompt("Add resolution note:") || "";
+  try {
+    const resolver = getResolverIdentity();
+    if (!note) note = prompt("Add resolution note:") || "";
 
-      // ✅ Switch POST → GET to avoid CORS issues
-      const params = new URLSearchParams({
-        fn: "resolve",
-        ticket,
-        note,
-        by: resolver,
-        token: TOKEN
-      });
-      const res = await fetch(`${WEB_APP_URL}?${params.toString()}`)
-        .then(r => r.json());
+    // ✅ Switch to GET to avoid CORS issues
+    const url = `${WEB_APP_URL}?fn=resolve&ticket=${encodeURIComponent(ticket)}&note=${encodeURIComponent(note)}&by=${encodeURIComponent(resolver)}&token=${TOKEN}`;
+    const res = await fetch(url).then(r => r.json());
 
-      if (res.ok) {
-        toast(`✅ Ticket resolved by ${resolver}`);
-        const row = [...qs("#queueBody").querySelectorAll("button.resolveBtn")]
-          .find(btn => btn.dataset.ticket === ticket)?.closest("tr");
-        if (row) {
-          row.classList.add("fade-out");
-          setTimeout(() => row.remove(), 400);
-        }
-        setTimeout(loadData, 1000);
-      } else {
-        toast("⚠️ Resolve failed: " + (res.error || "Unknown"));
+    if (res.ok) {
+      toast(`✅ Ticket resolved by ${resolver}`);
+      const row = [...qs("#queueBody").querySelectorAll("button.resolveBtn")]
+        .find(btn => btn.dataset.ticket === ticket)?.closest("tr");
+      if (row) {
+        row.classList.add("fade-out");
+        setTimeout(() => row.remove(), 400);
       }
-    } catch (err) {
-      console.error("resolveTicket error:", err);
-      toast("❌ Could not resolve ticket");
+      setTimeout(loadData, 1000);
+    } else {
+      toast("⚠️ Resolve failed: " + (res.error || "Unknown"));
     }
+  } catch (err) {
+    console.error("resolveTicket error:", err);
+    toast("❌ Could not resolve ticket");
   }
-
+}
   /* ====== INITIALIZE ON LOAD ====== */
   window.addEventListener("DOMContentLoaded", async () => {
     console.log("🚀 Takumi Command Center initializing...");
