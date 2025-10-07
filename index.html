@@ -348,17 +348,38 @@ function renderQueue(rows){
 }
 
 /* ====== LOAD DATA (HIGH-RISK) ====== */
-async function loadData(){
-  try{
+async function loadData() {
+  try {
     console.log("⏳ Loading high-risk queue…");
-    const res=await fetchFn("alerts");
-    if(!res.ok){ toast("⚠️ Failed to load alerts: "+(res.error||"Unknown")); return; }
-    ALL_ALERTS=res.alerts||[];
-    const rows=ALL_ALERTS.filter(r=>String(r.status||"").toLowerCase()!=="resolved"&&String(r.riskLevel||"").toLowerCase()==="high");
-    renderQueue(rows);
-  }catch(err){console.error("❌ loadData error:",err);toast("⚠️ Could not load alerts");}
-}
+    const res = await fetchFn("alerts");
+    if (!res.ok) {
+      toast("⚠️ Failed to load alerts: " + (res.error || "Unknown"));
+      return;
+    }
 
+    // --- Save all alerts for later filtering/search ---
+    ALL_ALERTS = res.alerts || [];
+
+    // --- Render the High-Risk Queue table ---
+    const rows = ALL_ALERTS.filter(r =>
+      String(r.status || "").toLowerCase() !== "resolved" &&
+      String(r.riskLevel || "").toLowerCase() === "high"
+    );
+    renderQueue(rows);
+
+    // --- Populate KPI summary cards ---
+    const k = res.kpis || {};
+    qs("#highRiskCount").textContent = k.highRisk ?? "—";
+    qs("#mediumRiskCount").textContent = k.mediumRisk ?? "—";
+    qs("#resolved7d").textContent = k.resolved7d ?? "—";
+    qs("#avgScore7d").textContent = k.avgScore ? `${k.avgScore}%` : "—";
+
+    console.log("✅ Alerts and KPIs loaded:", k);
+  } catch (err) {
+    console.error("❌ loadData error:", err);
+    toast("⚠️ Could not load alerts");
+  }
+}
 /* ====== LIVE AUDITS ====== */
 async function loadRecentAudits(){
   try{
