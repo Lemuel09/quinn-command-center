@@ -358,7 +358,7 @@ async function loadData(){
     renderQueue(rows);
   }catch(err){console.error("❌ loadData error:",err);toast("⚠️ Could not load alerts");}
 }
-</script>
+<script>
 /* ====== LIVE AUDITS ====== */
 async function loadRecentAudits(){
   try{
@@ -400,7 +400,6 @@ qs("#searchBox").addEventListener("input",e=>{
 });
 
 <!-- ====== RESOLVE BUTTON SECTION ====== -->
-<script>
   /* ====== HELPER: RESOLVER IDENTITY ====== */
   function getResolverIdentity() {
     const key = "quinn_resolver";
