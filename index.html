@@ -369,7 +369,7 @@ async function loadData() {
 
     // --- Populate KPI summary cards ---
     const k = res.kpis || {};
-qqs("#kpiHigh").textContent = k.highRisk ?? "—";
+qs("#kpiHigh").textContent = k.highRisk ?? "—";
 qs("#kpiMed").textContent = k.mediumRisk ?? "—";
 qs("#kpiRes7").textContent = k.resolved7d ?? "—";
 qs("#kpiScore").textContent = k.avgScore ? `${k.avgScore}%` : "—";
