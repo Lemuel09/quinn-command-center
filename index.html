@@ -369,10 +369,10 @@ async function loadData() {
 
     // --- Populate KPI summary cards ---
     const k = res.kpis || {};
-    qs("#highRiskCount").textContent = k.highRisk ?? "—";
-    qs("#mediumRiskCount").textContent = k.mediumRisk ?? "—";
-    qs("#resolved7d").textContent = k.resolved7d ?? "—";
-    qs("#avgScore7d").textContent = k.avgScore ? `${k.avgScore}%` : "—";
+qqs("#kpiHigh").textContent = k.highRisk ?? "—";
+qs("#kpiMed").textContent = k.mediumRisk ?? "—";
+qs("#kpiRes7").textContent = k.resolved7d ?? "—";
+qs("#kpiScore").textContent = k.avgScore ? `${k.avgScore}%` : "—";
 
     console.log("✅ Alerts and KPIs loaded:", k);
   } catch (err) {
